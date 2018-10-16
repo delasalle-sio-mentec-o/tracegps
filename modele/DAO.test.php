@@ -186,10 +186,7 @@ else {
 // Afin de limiter les conflits avec GitHub, il est décidé d'attribuer une zone de ce fichier à chaque développeur.
 
 // théo le boss : lignes 200 à 299
-
-
 // le 10e : lignes 300 à 399
-
 // Développeur 3 : lignes 400 à 500
 
 // Quelques conseils pour le travail collaboratif :
