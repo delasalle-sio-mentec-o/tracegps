@@ -334,8 +334,8 @@ class DAO
     
     // Le code restant à développer va être réparti entre les membres de l'équipe de développement.
     // Afin de limiter les conflits avec GitHub, il est décidé d'attribuer une zone de ce fichier à chaque développeur.
-    // Développeur 1 : lignes 350 à 549
-    // Développeur 2 : lignes 550 à 749
+    // Théo le boss : lignes 350 à 549
+    // Elven le 10E  : lignes 550 à 749
     // Développeur 3 : lignes 750 à 950
     
     // Quelques conseils pour le travail collaboratif :
@@ -348,9 +348,258 @@ class DAO
     
     
     // --------------------------------------------------------------------------------------
-    // début de la zone attribuée au développeur 1 (xxxxxxxxxxxxxxxxxxxx) : lignes 350 à 549
+    // début de la zone attribuée au développeur 1 (Théo le boss) : lignes 350 à 549
     // --------------------------------------------------------------------------------------
     
+    public function creerUneTrace($uneTrace) {
+        // on teste si l'utilisateur existe déjà
+        if ($this->existeIdTrace($uneTrace->getId())) return false;
+        
+        // préparation de la requête
+        $textReqInsertionTraceBdd = "insert into tracegps_traces (dateDebut, dateFin, terminee, idUtilisateur)";
+        $textReqInsertionTraceBdd .= " values (:dateDebut, :dateFin, :terminee, :idUtilisateur)";
+        $reqInsertionTraceBdd = $this->cnx->prepare($textReqInsertionTraceBdd);
+        // liaison de la requête et de ses paramètres
+        $reqInsertionTraceBdd->bindValue("dateDebut", utf8_decode(sha1($uneTrace->getDateDebut())), PDO::PARAM_STR);
+        $reqInsertionTraceBdd->bindValue("dateFin", utf8_decode($uneTrace->getDateFin()), PDO::PARAM_STR);
+        $reqInsertionTraceBdd->bindValue("terminee", utf8_decode($uneTrace->getTerminee()), PDO::PARAM_INT);
+        $reqInsertionTraceBdd->bindValue("idUtilisateur", utf8_decode($uneTrace->getIdUtilisateur()), PDO::PARAM_INT);
+        // exécution de la requête
+        $ok = $reqInsertionTraceBdd->execute();
+        // sortir en cas d'échec
+        if ( ! $ok) { return false; }
+        
+        // recherche de l'identifiant (auto_increment) qui a été attribué à la trace
+        $txtIdNewTrace = "Select max(id) as idMax from tracegps_utilisateurs";
+        $IdNewTrace = $this->cnx->prepare($txtIdNewTrace);
+        // extraction des données
+        $IdNewTrace->execute();
+        $uneLigne = $IdNewTrace->fetch(PDO::FETCH_OBJ);
+        $unId = $uneLigne->idMax;
+        $uneTrace->setId($unId);
+        return true;
+    }
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    // --------------------------------------------------------------------------------------
+    // début de la zone attribuée au développeur 2 (LE 10E) : lignes 550 à 749
+    // --------------------------------------------------------------------------------------
+    
+    // fournit true si le mail $adrMail existe dans la table tracegps_utilisateurs, false sinon
+    // modifié par Le 10e le 16/10/2018
+    public function existeAdrMailUtilisateur($adrMail) {
+        // préparation de la requête de recherche
+        $SelectAdrMailUtilisateur = "Select count(*) from tracegps_utilisateurs where adrMail = :adrMail";
+        $req = $this->cnx->prepare($SelectAdrMailUtilisateur);
+        // liaison de la requête et de ses paramètres
+        $req->bindValue("adrMail", $adrMail, PDO::PARAM_STR);
+        // exécution de la requête
+        $req->execute();
+        $nbReponses = $req->fetchColumn(0);
+        // libère les ressources du jeu de données
+        $req->closeCursor();
+        
+        // fourniture de la réponse
+        if ($nbReponses == 0) {
+            return false;
+        }
+        else {
+            return true;
+        }
+    }
 
     
     
@@ -548,212 +797,26 @@ class DAO
     
     
     // --------------------------------------------------------------------------------------
-    // début de la zone attribuée au développeur 2 (xxxxxxxxxxxxxxxxxxxx) : lignes 550 à 749
-    // --------------------------------------------------------------------------------------
-    
-
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    // --------------------------------------------------------------------------------------
-    // début de la zone attribuée au développeur 3 (xxxxxxxxxxxxxxxxxxxx) : lignes 750 à 949
+    // début de la zone attribuée au développeur 3 (Mentec) : lignes 750 à 949
     // --------------------------------------------------------------------------------------
     
     
     
+    //Début Création autorisation
     
+    public function creationAutorisation ($idAutorisant, $idAutorise) {
+        $txt_req1 = "insert into tracegps_autorisations" ;
+        $txt_req1 .= " values (:idAutorisant, :idAutorise)";
+        $req1 = $this->cnx->prepare($txt_req1);
+        // liaison de la requête et de ses paramètres
+        $req1->bindValue("idAutorisant", utf8_decode($idAutorisant), PDO::PARAM_INT);
+        $req1->bindValue("idAutorise", utf8_decode($idAutorise), PDO::PARAM_INT);
+        // exécution de la requête
+        $ok = $req1->execute();
+        $req1->closeCursor();
+    }
+    
+    //Fin Création autorisation
     
     
     
