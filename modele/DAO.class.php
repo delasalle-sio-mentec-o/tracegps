@@ -951,12 +951,52 @@ class DAO
     
     
     
-    
+    //Début supprimerUneAutorisation
     
         
+    public function supprimerUneAutorisation ($idAutorisant, $idAutorise) {
+        
+        // préparation de la requête de recherche
+        $txt_req = "DELETE from tracegps_autorisations";
+        $txt_req .= " where idAutorisant = :idAutorisant";
+        $txt_req .= " and idAutorise = :idAutorise";
+        
+        //echo $txt_req;
+        
+        $req = $this->cnx->prepare($txt_req);
+        $req->bindValue("idAutorisant", utf8_decode($idAutorisant), PDO::PARAM_INT);
+        $req->bindValue("idAutorise", utf8_decode($idAutorise), PDO::PARAM_INT);
+        // extraction des données
+        $req->execute();
+        
+        $req->closeCursor();
+        
+        $txt_req = "SELECT COUNT(*) As nb from tracegps_autorisations";
+        $txt_req .= " where idAutorisant = :idAutorisant";
+        $txt_req .= " and idAutorise = :idAutorise";
+        
+        //echo $txt_req;
+        
+        $req = $this->cnx->prepare($txt_req);
+        $req->bindValue("idAutorisant", utf8_decode($idAutorisant), PDO::PARAM_INT);
+        $req->bindValue("idAutorise", utf8_decode($idAutorise), PDO::PARAM_INT);
+        // extraction des données
+        $req->execute();
+        $uneLigne = $req->fetch(PDO::FETCH_OBJ);
+        
+        if ($uneLigne->nb = 0){
+            return "oui";
+        }
+        else{
+            return "non";
+        }
+        
+        $req->closeCursor();
+        
+        
+    }
     
-    
-    
+    //Fin supprimerUneAutorisation
     
     
     
