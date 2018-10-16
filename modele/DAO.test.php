@@ -428,12 +428,20 @@ echo "Existence de l'utilisateur 'delasalle.sio.eleves@gmail.com' : <b>" . $exis
 
 
 // --------------------------------------------------------------------------------------
-// début de la zone attribuée au développeur 3 (xxxxxxxxxxxxxxxxxxxx) : lignes 400 à 499
+// début de la zone attribuée au développeur 3 (Mentec) : lignes 400 à 499
 // --------------------------------------------------------------------------------------
 
 
 
 
+// test de la méthode creerUneAutorisation ---------------------------------------------------------
+// modifié par Jim le 13/8/2018
+echo "<h3>Test de creerUneAutorisation : </h3>";
+if ($dao->creerUneAutorisation(2, 1)) $ok = "oui"; else $ok = "non";
+echo "<p>La création de l'autorisation de l'utilisateur 2 vers l'utilisateur 1 a réussi : <b>" . $ok . "</b><br>";
+// la même autorisation ne peut pas être enregistrée 2 fois
+if ($dao->creerUneAutorisation(2, 1)) $ok = "oui"; else $ok = "non";
+echo "<p>La création de l'autorisation de l'utilisateur 2 vers l'utilisateur 1 a réussi : <b>" . $ok . "</b><br>";
 
 
 
