@@ -1,6 +1,6 @@
 <?php
 // création de test.php 16:00 09/10/2018
-//test v2 kc
+//test v2 kc elven
 
 
 echo "<text>TraceGPSoui</text><br>";
