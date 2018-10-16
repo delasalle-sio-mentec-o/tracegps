@@ -185,7 +185,7 @@ else {
 // Le code restant à développer va être réparti entre les membres de l'équipe de développement.
 // Afin de limiter les conflits avec GitHub, il est décidé d'attribuer une zone de ce fichier à chaque développeur.
 // Développeur 1 : lignes 200 à 299
-// Développeur 2 : lignes 300 à 399
+// le 10e : lignes 300 à 399
 // Développeur 3 : lignes 400 à 500
 
 // Quelques conseils pour le travail collaboratif :
@@ -298,8 +298,15 @@ else {
 
 
 // --------------------------------------------------------------------------------------
-// début de la zone attribuée au développeur 2 (xxxxxxxxxxxxxxxxxxxx) : lignes 300 à 399
+// début de la zone attribuée au développeur 2 (le 10e) : lignes 300 à 399
 // --------------------------------------------------------------------------------------
+// test de la méthode existeAdrMailUtilisateur ----------------------------------------------------
+// modifié par Colleu le 16/10/2018
+echo "<h3>Test de existeAdrMailUtilisateur : </h3>";
+if ($dao->existeAdrMailUtilisateur("admin@gmail.com")) $existe = "oui"; else $existe = "non";
+echo "<p>Existence de l'utilisateur 'admin@gmail.com' : <b>" . $existe . "</b><br>";
+if ($dao->existeAdrMailUtilisateur("delasalle.sio.eleves@gmail.com")) $existe = "oui"; else $existe = "non";
+echo "Existence de l'utilisateur 'delasalle.sio.eleves@gmail.com' : <b>" . $existe . "</b></br>";
 
 
 
