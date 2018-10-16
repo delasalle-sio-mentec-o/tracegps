@@ -351,28 +351,6 @@ class DAO
     // début de la zone attribuée au développeur 1 (Théo le boss) : lignes 350 à 549
 
     // --------------------------------------------------------------------------------------
-    public function existeIdTrace($unId) {
-        // préparation de la requête de recherche
-        $txt_req = "Select count(*) from tracegps_trace where id = :id";
-        $req = $this->cnx->prepare($txt_req);
-        // liaison de la requête et de ses paramètres
-        $req->bindValue("id", $unId, PDO::PARAM_INT);
-        // exécution de la requête
-        $req->execute();
-        $nbReponses = $req->fetchColumn(0);
-        // libère les ressources du jeu de données
-        $req->closeCursor();
-        
-        // fourniture de la réponse
-        if ($nbReponses == 0) {
-            return false;
-        }
-        else {
-            return true;
-        }
-    }
-    
-
     public function creerUneTrace($uneTrace) {
         // on teste si l'utilisateur existe déjà
         
@@ -402,15 +380,22 @@ class DAO
     }
     
     public function supprimerUneTrace($id) {
-        $uneTrace = $this->getLesTraces($id);
+        $uneTrace = $this->getUneTrace($id);
         if ($uneTrace == null) {
             return false;
         }
         else {            
             // suppression des traces de l'utilisateur (et des points correspondants)
-            $lesPoints = $this->getLesPoints($idTrace);
+            $lesPoints = $this->getLesPointsDeTrace($id);
             foreach ($lesPoints as $unPoint) {
-                $this->supprimerUnPoint($unPoint->getId());
+                $txt_req2 = "delete from tracegps_points" ;
+                $txt_req2 .= " where id = :idPoint";
+                $req2 = $this->cnx->prepare($txt_req2);
+                // liaison de la requête et de ses paramètres
+                $req2->bindValue("idPoint", utf8_decode($unPoint->getId()), PDO::PARAM_INT);
+                // exécution de la requête
+                $ok = $req2->execute();
+                
             }
             
             // préparation de la requête de suppression des autorisations
@@ -418,18 +403,9 @@ class DAO
             $txt_req1 .= " where id = :id";
             $req1 = $this->cnx->prepare($txt_req1);
             // liaison de la requête et de ses paramètres
-            $req1->bindValue("id", utf8_decode($idTrace), PDO::PARAM_INT);
+            $req1->bindValue("id", utf8_decode($id), PDO::PARAM_INT);
             // exécution de la requête
             $ok = $req1->execute();
-            
-            // préparation de la requête de suppression de l'utilisateur
-            $txt_req2 = "delete from tracegps_ponts" ;
-            $txt_req2 .= " where idTrace = :idTrace";
-            $req2 = $this->cnx->prepare($txt_req2);
-            // liaison de la requête et de ses paramètres
-            $req2->bindValue("idTrace", utf8_decode($idTrace), PDO::PARAM_INT);
-            // exécution de la requête
-            $ok = $req2->execute();
             return $ok;
         }
     }
