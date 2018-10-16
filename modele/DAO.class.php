@@ -802,7 +802,21 @@ class DAO
     
     
     
+    //Début Création autorisation
     
+    public function creationAutorisation ($idAutorisant, $idAutorise) {
+        $txt_req1 = "insert into tracegps_autorisations" ;
+        $txt_req1 .= " values (:idAutorisant, :idAutorise)";
+        $req1 = $this->cnx->prepare($txt_req1);
+        // liaison de la requête et de ses paramètres
+        $req1->bindValue("idAutorisant", utf8_decode($idAutorisant), PDO::PARAM_INT);
+        $req1->bindValue("idAutorise", utf8_decode($idAutorise), PDO::PARAM_INT);
+        // exécution de la requête
+        $ok = $req1->execute();
+        
+    }
+    
+    //Fin Création autorisation
     
     
     
