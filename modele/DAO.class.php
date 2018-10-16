@@ -555,8 +555,8 @@ class DAO
     // modifié par Le 10e le 16/10/2018
     public function existeAdrMailUtilisateur($adrMail) {
         // préparation de la requête de recherche
-        $txt_req = "Select count(*) from tracegps_utilisateurs where pseudo = :adrMail";
-        $req = $this->cnx->prepare($txt_req);
+        $SelectAdrMailUtilisateur = "Select count(*) from tracegps_utilisateurs where adrMail = :adrMail";
+        $req = $this->cnx->prepare($SelectAdrMailUtilisateur);
         // liaison de la requête et de ses paramètres
         $req->bindValue("adrMail", $adrMail, PDO::PARAM_STR);
         // exécution de la requête
