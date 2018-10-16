@@ -132,7 +132,7 @@ else {
 
 
 
-
+/*
 // test de la méthode supprimerUnUtilisateur ------------------------------------------------------
 // modifié par Jim le 12/8/2018
 /*echo "<h3>Test de supprimerUnUtilisateur : </h3>";
@@ -150,10 +150,10 @@ if ($ok) {
 else {
     echo "<p>Echec lors de la suppression de l'utilisateur toto !</p>";
 }
+*/
 
 
-
-
+/*
 // test de la méthode envoyerMdp ------------------------------------------------------------------
 // modifié par Jim le 12/8/2018
 echo "<h3>Test de envoyerMdp : </h3>";
@@ -175,7 +175,8 @@ if ($ok) {
 }
 else {
     echo "<p>Echec lors de la suppression de l'utilisateur toto !</p>";
-}*/
+}
+*/
 
 
 
@@ -427,12 +428,20 @@ echo "Existence de l'utilisateur 'delasalle.sio.eleves@gmail.com' : <b>" . $exis
 
 
 // --------------------------------------------------------------------------------------
-// début de la zone attribuée au développeur 3 (xxxxxxxxxxxxxxxxxxxx) : lignes 400 à 499
+// début de la zone attribuée au développeur 3 (Mentec) : lignes 400 à 499
 // --------------------------------------------------------------------------------------
 
 
 
 
+// test de la méthode creerUneAutorisation ---------------------------------------------------------
+// modifié par Jim le 13/8/2018
+echo "<h3>Test de creerUneAutorisation : </h3>";
+if ($dao->creerUneAutorisation(2, 1)) $ok = "oui"; else $ok = "non";
+echo "<p>La création de l'autorisation de l'utilisateur 2 vers l'utilisateur 1 a réussi : <b>" . $ok . "</b><br>";
+// la même autorisation ne peut pas être enregistrée 2 fois
+if ($dao->creerUneAutorisation(2, 1)) $ok = "oui"; else $ok = "non";
+echo "<p>La création de l'autorisation de l'utilisateur 2 vers l'utilisateur 1 a réussi : <b>" . $ok . "</b><br>";
 
 
 
@@ -529,6 +538,18 @@ echo "Existence de l'utilisateur 'delasalle.sio.eleves@gmail.com' : <b>" . $exis
 // --------------------------------------------------------------------------------------
 // début de la zone attribuée au développeur 4 (Ronan) : lignes 500 à 700
 // --------------------------------------------------------------------------------------
+
+// test de la méthode getLesPointsDeTrace ---------------------------------------------------------
+// modifié par Jim le 13/8/2018
+echo "<h3>Test de getLesPointsDeTrace : </h3>";
+$lesPoints = $dao->getLesPointsDeTrace(1);
+$nbPoints = sizeof($lesPoints);
+echo "<p>Nombre de points de la trace 1 : " . $nbPoints . "</p>";
+// affichage des points
+foreach ($lesPoints as $unPoint)
+{   echo ($unPoint->toString());
+echo ('<br>');
+}
 
 
 
