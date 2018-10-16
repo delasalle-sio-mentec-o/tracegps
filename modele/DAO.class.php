@@ -349,31 +349,9 @@ class DAO
     
     // --------------------------------------------------------------------------------------
     // début de la zone attribuée au développeur 1 (Théo le boss) : lignes 350 à 549
-    // --------------------------------------------------------------------------------------
-    public function existeIdTrace($unId) {
-        // préparation de la requête de recherche
-        $txt_req = "Select count(*) from tracegps_trace where id = :id";
-        $req = $this->cnx->prepare($txt_req);
-        // liaison de la requête et de ses paramètres
-        $req->bindValue("id", $unId, PDO::PARAM_INT);
-        // exécution de la requête
-        $req->execute();
-        $nbReponses = $req->fetchColumn(0);
-        // libère les ressources du jeu de données
-        $req->closeCursor();
-        
-        // fourniture de la réponse
-        if ($nbReponses == 0) {
-            return false;
-        }
-        else {
-            return true;
-        }
-    }
-    
+    // --------------------------------------------------------------------------------------  
     public function creerUneTrace($uneTrace) {
         // on teste si l'utilisateur existe déjà
-        if ($this->existeIdTrace($uneTrace->getId())) return false;
         
         // préparation de la requête
         $textReqInsertionTraceBdd = "insert into tracegps_traces (dateDebut, dateFin, terminee, idUtilisateur)";
