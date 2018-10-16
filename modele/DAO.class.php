@@ -348,7 +348,7 @@ class DAO
     
     
     // --------------------------------------------------------------------------------------
-    // début de la zone attribuée au développeur 1 (xxxxxxxxxxxxxxxxxxxx) : lignes 350 à 549
+    // début de la zone attribuée au développeur 1 (Théo le boss) : lignes 350 à 549
     // --------------------------------------------------------------------------------------
     
 
