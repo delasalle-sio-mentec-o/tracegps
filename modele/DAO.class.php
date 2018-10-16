@@ -271,7 +271,7 @@ class DAO
         return $ok;
     }
     
-    
+    /*
     // supprime l'utilisateur $pseudo dans la bdd, ainsi que ses traces et ses autorisations
     // fournit true si l'effacement s'est bien effectué, false sinon
     // modifié par Jim le 9/1/2018
@@ -309,7 +309,7 @@ class DAO
             return $ok;
         }
     }
-    
+    */
     
     // envoie un mail à l'utilisateur $pseudo avec son nouveau mot de passe $nouveauMdp
     // retourne true si envoi correct, false en cas de problème d'envoi
