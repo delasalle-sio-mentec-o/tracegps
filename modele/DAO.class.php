@@ -1178,6 +1178,43 @@ class DAO
     }
     
     
+    public function creerUnPointDeTrace($unPointDeTrace)
+    {
+
+        
+        $idTrace = $unPointDeTrace->getIdTrace();
+        $id = $unPointDeTrace->getId();
+        $latitude = $unPointDeTrace->getLatitude();
+        $longitude = $unPointDeTrace->getLongitude();
+        $altitude = $unPointDeTrace->getAltitude();
+        $dateHeure = $unPointDeTrace->getDateHeure();
+        $rythmeCardio = $unPointDeTrace->getRythmeCardio();
+        
+        $req_txt = "INSERT INTO tracegps_points";
+        $req_txt .= " VALUES (:idTrace, :id, :latitude, :longitude, :altitude, :dateHeure, :rythmeCardio);";
+        $reqInsert = $this->cnx->prepare($req_txt);
+        $reqInsert->bindValue("idTrace",$idTrace,PDO::PARAM_INT);
+        $reqInsert->bindValue("id", $id, PDO::PARAM_INT);
+        $reqInsert->bindValue("latitude", $latitude, PDO::PARAM_STR);
+        $reqInsert->bindValue("longitude", $longitude, PDO::PARAM_STR);
+        $reqInsert->bindValue("altitude", $altitude, PDO::PARAM_STR);
+        $reqInsert->bindValue("dateHeure", $dateHeure, PDO::PARAM_STR);
+        $reqInsert->bindValue("rythmeCardio", $rythmeCardio, PDO::PARAM_INT);
+
+        $ok = $reqInsert->execute();
+        // sortir en cas d'échec
+        if ( ! $ok) { return false; }
+        
+        if ($id == 1)
+        {
+            $req_txt = "UPDATE tracegps_traces SET dateDebut = :dateDebut";
+            $reqUpdate = $this->cnx->prepare($req_txt);
+            $reqUpdate->bindValue("dateDebut", $dateHeure, PDO::PARAM_STR);
+            $reqUpdate->execute();
+        }
+        
+        return true;
+    }
     
     
     
