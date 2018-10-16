@@ -825,6 +825,16 @@ class DAO
     //Début Création autorisation
     
     public function creationAutorisation ($idAutorisant, $idAutorise) {
+        
+        
+        $txt_req1 = "select COUNT(*) from tracegps_autorisations" ;
+        $req1 = $this->cnx->prepare($txt_req1);
+        // exécution de la requête
+        $ok = $req1->execute();
+        $result1 = $req1->fetch(PDO::FETCH_OBJ);
+        $req1->closeCursor();
+        
+
         $txt_req1 = "insert into tracegps_autorisations" ;
         $txt_req1 .= " values (:idAutorisant, :idAutorise)";
         $req1 = $this->cnx->prepare($txt_req1);
@@ -834,6 +844,22 @@ class DAO
         // exécution de la requête
         $ok = $req1->execute();
         $req1->closeCursor();
+        
+        $txt_req1 = "select COUNT(*) from tracegps_autorisations" ;
+        $req1 = $this->cnx->prepare($txt_req1);
+        // exécution de la requête
+        $ok = $req1->execute();
+        $result2 = $req1->fetch(PDO::FETCH_OBJ);
+        $req1->closeCursor();
+        
+        if ($result2 > $resulte1)
+        {
+            return true;
+        }
+            else
+            {
+                return false;
+            }
     }
     
     //Fin Création autorisation
