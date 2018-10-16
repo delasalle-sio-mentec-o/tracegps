@@ -349,6 +349,7 @@ class DAO
     
     // --------------------------------------------------------------------------------------
     // début de la zone attribuée au développeur 1 (Théo le boss) : lignes 350 à 549
+
     // --------------------------------------------------------------------------------------
     public function existeIdTrace($unId) {
         // préparation de la requête de recherche
@@ -371,18 +372,17 @@ class DAO
         }
     }
     
-    
+
     public function creerUneTrace($uneTrace) {
         // on teste si l'utilisateur existe déjà
-        if ($this->existeIdTrace($uneTrace->getId())) return false;
         
         // préparation de la requête
         $textReqInsertionTraceBdd = "insert into tracegps_traces (dateDebut, dateFin, terminee, idUtilisateur)";
         $textReqInsertionTraceBdd .= " values (:dateDebut, :dateFin, :terminee, :idUtilisateur)";
         $reqInsertionTraceBdd = $this->cnx->prepare($textReqInsertionTraceBdd);
         // liaison de la requête et de ses paramètres
-        $reqInsertionTraceBdd->bindValue("dateDebut", utf8_decode(sha1($uneTrace->getDateDebut())), PDO::PARAM_STR);
-        $reqInsertionTraceBdd->bindValue("dateFin", utf8_decode($uneTrace->getDateFin()), PDO::PARAM_STR);
+        $reqInsertionTraceBdd->bindValue("dateDebut", utf8_decode($uneTrace->getDateHeureDebut()), PDO::PARAM_STR);
+        $reqInsertionTraceBdd->bindValue("dateFin", utf8_decode($uneTrace->getDateHeureFin()), PDO::PARAM_STR);
         $reqInsertionTraceBdd->bindValue("terminee", utf8_decode($uneTrace->getTerminee()), PDO::PARAM_INT);
         $reqInsertionTraceBdd->bindValue("idUtilisateur", utf8_decode($uneTrace->getIdUtilisateur()), PDO::PARAM_INT);
         // exécution de la requête
@@ -825,7 +825,7 @@ class DAO
     
     //Début Création autorisation
     
-    public function creationAutorisation ($idAutorisant, $idAutorise) {
+    public function creerUneAutorisation ($idAutorisant, $idAutorise) {
         
         
         $txt_req1 = "select COUNT(*) As nb from tracegps_autorisations" ;
@@ -838,7 +838,7 @@ class DAO
         
 
         $txt_req1 = "insert into tracegps_autorisations" ;
-        $txt_req1 .= " values (:idAutorisant, :idAutorise)";
+        $txt_req1 .= " values (:idAutorise, :idAutorisant)";
         $req1 = $this->cnx->prepare($txt_req1);
         // liaison de la requête et de ses paramètres
         $req1->bindValue("idAutorisant", utf8_decode($idAutorisant), PDO::PARAM_INT);
@@ -855,22 +855,29 @@ class DAO
         $result2 = $result2->nb;
         $req1->closeCursor();
         
-        if ($result2 > $resulte1)
+        if ($result2 > $result1)
         {
-            return true;
+            return "oui";
         }
             else
             {
-                return false;
+                return "non";
             }
     }
     
     //Fin Création autorisation
     
     
+    //Début getLesUtilisateursAutorises
+    
+    public function getLesUtilisateursAutorises ($idUtilisateur) {
+        
+        
+       
+    }
     
     
-    
+    //Fin getLesUtilisateursAutorises
     
     
     
