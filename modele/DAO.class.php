@@ -358,10 +358,10 @@ class DAO
         $textReqInsertionTraceBdd .= " values (:dateDebut, :dateFin, :terminee, :idUtilisateur)";
         $reqInsertionTraceBdd = $this->cnx->prepare($textReqInsertionTraceBdd);
         // liaison de la requête et de ses paramètres
-        $reqInsertionTraceBdd->bindValue("dateDebut", utf8_decode($uneTrace->dateDebut), PDO::PARAM_STR);
-        $reqInsertionTraceBdd->bindValue("dateFin", utf8_decode($uneTrace->dateFin), PDO::PARAM_STR);
-        $reqInsertionTraceBdd->bindValue("terminee", utf8_decode($uneTrace->terminee), PDO::PARAM_INT);
-        $reqInsertionTraceBdd->bindValue("idUtilisateur", utf8_decode($uneTrace->idUtilisateur), PDO::PARAM_INT);
+        $reqInsertionTraceBdd->bindValue("dateDebut", utf8_decode($uneTrace->getDateHeureDebut()), PDO::PARAM_STR);
+        $reqInsertionTraceBdd->bindValue("dateFin", utf8_decode($uneTrace->getDateHeureFin()), PDO::PARAM_STR);
+        $reqInsertionTraceBdd->bindValue("terminee", utf8_decode($uneTrace->getTerminee()), PDO::PARAM_INT);
+        $reqInsertionTraceBdd->bindValue("idUtilisateur", utf8_decode($uneTrace->getIdUtilisateur()), PDO::PARAM_INT);
         // exécution de la requête
         $ok = $reqInsertionTraceBdd->execute();
         // sortir en cas d'échec
