@@ -802,7 +802,7 @@ class DAO
     
     //Début Création autorisation
     
-    public function creationAutorisation ($idAutorisant, $idAutorise) {
+    public function creerUneAutorisation ($idAutorisant, $idAutorise) {
         
         
         $txt_req1 = "select COUNT(*) As nb from tracegps_autorisations" ;
@@ -815,7 +815,7 @@ class DAO
         
 
         $txt_req1 = "insert into tracegps_autorisations" ;
-        $txt_req1 .= " values (:idAutorisant, :idAutorise)";
+        $txt_req1 .= " values (:idAutorise, :idAutorisant)";
         $req1 = $this->cnx->prepare($txt_req1);
         // liaison de la requête et de ses paramètres
         $req1->bindValue("idAutorisant", utf8_decode($idAutorisant), PDO::PARAM_INT);
@@ -832,13 +832,13 @@ class DAO
         $result2 = $result2->nb;
         $req1->closeCursor();
         
-        if ($result2 > $resulte1)
+        if ($result2 > $result1)
         {
-            return true;
+            return "oui";
         }
             else
             {
-                return false;
+                return "non";
             }
     }
     
