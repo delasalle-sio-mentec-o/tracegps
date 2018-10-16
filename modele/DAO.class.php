@@ -845,9 +845,16 @@ class DAO
     //Fin Création autorisation
     
     
+    //Début getLesUtilisateursAutorises
+    
+    public function getLesUtilisateursAutorises ($idUtilisateur) {
+        
+        
+       
+    }
     
     
-    
+    //Fin getLesUtilisateursAutorises
     
     
     
