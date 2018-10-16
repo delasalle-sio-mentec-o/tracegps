@@ -813,7 +813,7 @@ class DAO
         $req1->bindValue("idAutorise", utf8_decode($idAutorise), PDO::PARAM_INT);
         // exécution de la requête
         $ok = $req1->execute();
-        
+        $req1->closeCursor();
     }
     
     //Fin Création autorisation
