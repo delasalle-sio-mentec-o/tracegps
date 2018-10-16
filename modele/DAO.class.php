@@ -348,7 +348,7 @@ class DAO
     
     
     // --------------------------------------------------------------------------------------
-    // début de la zone attribuée au développeur 1 (xxxxxxxxxxxxxxxxxxxx) : lignes 350 à 549
+    // début de la zone attribuée au développeur 1 (Couillard) : lignes 350 à 549
     // --------------------------------------------------------------------------------------
     
 
@@ -548,7 +548,7 @@ class DAO
     
     
     // --------------------------------------------------------------------------------------
-    // début de la zone attribuée au développeur 2 (xxxxxxxxxxxxxxxxxxxx) : lignes 550 à 749
+    // début de la zone attribuée au développeur 2 (Colleu) : lignes 550 à 749
     // --------------------------------------------------------------------------------------
     
 
@@ -748,7 +748,7 @@ class DAO
     
     
     // --------------------------------------------------------------------------------------
-    // début de la zone attribuée au développeur 3 (xxxxxxxxxxxxxxxxxxxx) : lignes 750 à 949
+    // début de la zone attribuée au développeur 3 (Mentec) : lignes 750 à 949
     // --------------------------------------------------------------------------------------
     
     
@@ -948,7 +948,7 @@ class DAO
     
    
     // --------------------------------------------------------------------------------------
-    // début de la zone attribuée au développeur 3 (xxxxxxxxxxxxxxxxxxxx) : lignes 950 à 1150
+    // début de la zone attribuée au développeur 4 (Derrien) : lignes 950 à 1150
     // --------------------------------------------------------------------------------------
     
     
