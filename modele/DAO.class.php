@@ -905,11 +905,15 @@ class DAO
         
         // préparation de la requête de recherche
         $txt_req = "Select id, pseudo, mdpSha1, adrMail, numTel, niveau, dateCreation, nbTraces, dateDerniereTrace";
-        $txt_req .= " from tracegps_vue_utilisateurs";
+        $txt_req .= " from tracegps_vue_utilisateurs, tracegps_autorisations";
         $txt_req .= " where niveau = 1";
+        $txt_req .= " and idAutorise = id AND idAutorisant = :idUtilisateur";
         $txt_req .= " order by pseudo";
         
+        echo $txt_req;
+        
         $req = $this->cnx->prepare($txt_req);
+        $req->bindValue("idUtilisateur", utf8_decode($idUtilisateur), PDO::PARAM_INT);
         // extraction des données
         $req->execute();
         $uneLigne = $req->fetch(PDO::FETCH_OBJ);
