@@ -1074,11 +1074,7 @@ class DAO
         // extraction des données
         $req->execute();
         $uneLigne = $req->fetch(PDO::FETCH_OBJ);
-        
-        $unTempsCumule = 0;
-        $uneDistanceCumuluee = 0;
-        $uneVitesse = 0;
-        
+              
         // construction d'une collection d'objets Utilisateur
         $uneTrace = array();
         // tant qu'une ligne est trouvée :
