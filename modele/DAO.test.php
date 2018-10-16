@@ -132,7 +132,7 @@ else {
 
 
 
-
+/*
 // test de la méthode supprimerUnUtilisateur ------------------------------------------------------
 // modifié par Jim le 12/8/2018
 echo "<h3>Test de supprimerUnUtilisateur : </h3>";
@@ -150,10 +150,10 @@ if ($ok) {
 else {
     echo "<p>Echec lors de la suppression de l'utilisateur toto !</p>";
 }
+*/
 
 
-
-
+/*
 // test de la méthode envoyerMdp ------------------------------------------------------------------
 // modifié par Jim le 12/8/2018
 echo "<h3>Test de envoyerMdp : </h3>";
@@ -176,7 +176,7 @@ if ($ok) {
 else {
     echo "<p>Echec lors de la suppression de l'utilisateur toto !</p>";
 }
-
+*/
 
 
 
@@ -500,6 +500,18 @@ else {
 // --------------------------------------------------------------------------------------
 // début de la zone attribuée au développeur 4 (Ronan) : lignes 500 à 700
 // --------------------------------------------------------------------------------------
+
+// test de la méthode getLesPointsDeTrace ---------------------------------------------------------
+// modifié par Jim le 13/8/2018
+echo "<h3>Test de getLesPointsDeTrace : </h3>";
+$lesPoints = $dao->getLesPointsDeTrace(1);
+$nbPoints = sizeof($lesPoints);
+echo "<p>Nombre de points de la trace 1 : " . $nbPoints . "</p>";
+// affichage des points
+foreach ($lesPoints as $unPoint)
+{   echo ($unPoint->toString());
+echo ('<br>');
+}
 
 
 
