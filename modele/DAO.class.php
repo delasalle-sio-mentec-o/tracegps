@@ -348,10 +348,37 @@ class DAO
     
     
     // --------------------------------------------------------------------------------------
-    // début de la zone attribuée au développeur 1 (xxxxxxxxxxxxxxxxxxxx) : lignes 350 à 549
+    // début de la zone attribuée au développeur 1 (Théo le boss) : lignes 350 à 549
     // --------------------------------------------------------------------------------------
     
-
+    public function creerUneTrace($uneTrace) {
+        // on teste si l'utilisateur existe déjà
+        if ($this->existePseudoUtilisateur($uneTrace->getPseudo())) return false;
+        
+        // préparation de la requête
+        $textReqInsertionTraceBdd = "insert into tracegps_traces (dateDebut, dateFin, terminee, idUtilisateur)";
+        $textReqInsertionTraceBdd .= " values (:dateDebut, :dateFin, :terminee, :idUtilisateur)";
+        $reqInsertionTraceBdd = $this->cnx->prepare($textReqInsertionTraceBdd);
+        // liaison de la requête et de ses paramètres
+        $reqInsertionTraceBdd->bindValue("dateDebut", utf8_decode(sha1($uneTrace->getDateDebut())), PDO::PARAM_STR);
+        $reqInsertionTraceBdd->bindValue("dateFin", utf8_decode($uneTrace->getDateFin()), PDO::PARAM_STR);
+        $reqInsertionTraceBdd->bindValue("terminee", utf8_decode($uneTrace->getTerminee()), PDO::PARAM_INT);
+        $reqInsertionTraceBdd->bindValue("idUtilisateur", utf8_decode($uneTrace->getIdUtilisateur()), PDO::PARAM_INT);
+        // exécution de la requête
+        $ok = $reqInsertionTraceBdd->execute();
+        // sortir en cas d'échec
+        if ( ! $ok) { return false; }
+        
+        // recherche de l'identifiant (auto_increment) qui a été attribué à la trace
+        $txtIdNewTrace = "Select max(id) as idMax from tracegps_utilisateurs";
+        $IdNewTrace = $this->cnx->prepare($txtIdNewTrace);
+        // extraction des données
+        $IdNewTrace->execute();
+        $uneLigne = $IdNewTrace->fetch(PDO::FETCH_OBJ);
+        $unId = $uneLigne->idMax;
+        $uneTrace->setId($unId);
+        return true;
+    }
     
     
     
