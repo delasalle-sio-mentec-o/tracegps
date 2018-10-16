@@ -371,6 +371,7 @@ class DAO
         }
     }
     
+    
     public function creerUneTrace($uneTrace) {
         // on teste si l'utilisateur existe déjà
         if ($this->existeIdTrace($uneTrace->getId())) return false;
@@ -1077,11 +1078,11 @@ class DAO
         $req->execute();
         $uneLigne = $req->fetch(PDO::FETCH_OBJ);
               
-        // construction d'une collection d'objets Utilisateur
+        // construction d'une collection d'objets PointDeTrace
         $uneTrace = array();
         // tant qu'une ligne est trouvée :
         while ($uneLigne) {
-            // création d'un objet Utilisateur
+            // création d'un objet PointDeTrace
             $unIdTrace = $uneLigne->idTrace;
             $unId = $uneLigne->id;
             $uneLatitude = $uneLigne->latitude;
@@ -1104,6 +1105,38 @@ class DAO
         $req->closeCursor();
         // fourniture de la collection
         return $uneTrace;
+    }
+    
+    public function getUneTrace($idTrace)
+    {
+        $txt_req = "SELECT id, dateDebut, dateFin, terminee, idUtilisateur";
+        $txt_req .= " FROM tracegps_traces";
+        $txt_req .= " WHERE id = :idTraces";
+        
+        $req = $this->cnx->prepare($txt_req);
+        $req->bindValue('idTraces', $idTrace, PDO::PARAM_INT);
+        $req->execute();
+        
+        $uneLigne = $req->fetch(PDO::FETCH_OBJ);
+
+        $retour = null;
+       
+        while($uneLigne)
+        {
+            $laTrace = new Trace($uneLigne->id, $uneLigne->dateDebut, $uneLigne->dateFin, $uneLigne->terminee, $uneLigne->idUtilisateur);
+            $lesPoints = DAO::getLesPointsDeTrace($uneLigne->id);
+            
+            foreach ($lesPoints as $unPoint)
+            {   
+                $laTrace->ajouterPoint($unPoint);
+            }
+            
+            $retour = $laTrace;
+            $uneLigne = $req->fetch(PDO::FETCH_OBJ);
+        }
+        
+        return $retour;
+        
     }
     
     

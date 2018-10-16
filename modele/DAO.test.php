@@ -203,6 +203,7 @@ else {
 // début de la zone attribuée au développeur 1 (théo le boss ) : lignes 200 à 299
 // --------------------------------------------------------------------------------------
 
+
 // test de la méthode creerUneTrace ----------------------------------------------------------
 // modifié par Jim le 14/8/2018
 echo "<h3>Test de creerUneTrace : </h3>";
@@ -224,6 +225,8 @@ if ($ok) {
 else {
     echo "<p>Echec lors de l'enregistrement de la trace !</p>";
 }
+
+
 
 
 
@@ -543,6 +546,24 @@ foreach ($lesPoints as $unPoint)
 echo ('<br>');
 }
 
+
+// test de la méthode getUneTrace -----------------------------------------------------------------
+// modifié par Jim le 14/8/2018
+echo "<h3>Test de getUneTrace : </h3>";
+$uneTrace = $dao->getUneTrace(2);
+if ($uneTrace) {
+    echo "<p>La trace 2 existe : <br>" . $uneTrace->toString() . "</p>";
+}
+else {
+    echo "<p>La trace 2 n'existe pas !</p>";
+}
+$uneTrace = $dao->getUneTrace(100);
+if ($uneTrace) {
+    echo "<p>La trace 100 existe : <br>" . $uneTrace->toString() . "</p>";
+}
+else {
+    echo "<p>La trace 100 n'existe pas !</p>";
+}
 
 
 
