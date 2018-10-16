@@ -827,11 +827,12 @@ class DAO
     public function creationAutorisation ($idAutorisant, $idAutorise) {
         
         
-        $txt_req1 = "select COUNT(*) from tracegps_autorisations" ;
+        $txt_req1 = "select COUNT(*) As nb from tracegps_autorisations" ;
         $req1 = $this->cnx->prepare($txt_req1);
         // exécution de la requête
         $ok = $req1->execute();
         $result1 = $req1->fetch(PDO::FETCH_OBJ);
+        $result1 = $result1->nb;
         $req1->closeCursor();
         
 
@@ -845,11 +846,12 @@ class DAO
         $ok = $req1->execute();
         $req1->closeCursor();
         
-        $txt_req1 = "select COUNT(*) from tracegps_autorisations" ;
+        $txt_req1 = "select COUNT(*) As nb from tracegps_autorisations" ;
         $req1 = $this->cnx->prepare($txt_req1);
         // exécution de la requête
         $ok = $req1->execute();
         $result2 = $req1->fetch(PDO::FETCH_OBJ);
+        $result2 = $result2->nb;
         $req1->closeCursor();
         
         if ($result2 > $resulte1)
