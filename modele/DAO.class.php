@@ -353,7 +353,7 @@ class DAO
     
     public function creerUneTrace($uneTrace) {
         // on teste si l'utilisateur existe déjà
-        if ($this->existePseudoUtilisateur($uneTrace->getPseudo())) return false;
+        if ($this->existeIdTrace($uneTrace->getId())) return false;
         
         // préparation de la requête
         $textReqInsertionTraceBdd = "insert into tracegps_traces (dateDebut, dateFin, terminee, idUtilisateur)";
