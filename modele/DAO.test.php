@@ -135,7 +135,7 @@ else {
 
 // test de la méthode supprimerUnUtilisateur ------------------------------------------------------
 // modifié par Jim le 12/8/2018
-echo "<h3>Test de supprimerUnUtilisateur : </h3>";
+/*echo "<h3>Test de supprimerUnUtilisateur : </h3>";
 $ok = $dao->supprimerUnUtilisateur("toto");
 if ($ok) {
     echo "<p>Utilisateur toto bien supprimé !</p>";
@@ -175,7 +175,7 @@ if ($ok) {
 }
 else {
     echo "<p>Echec lors de la suppression de l'utilisateur toto !</p>";
-}
+}*/
 
 
 
