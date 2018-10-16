@@ -797,12 +797,26 @@ class DAO
     
     
     // --------------------------------------------------------------------------------------
-    // début de la zone attribuée au développeur 3 (xxxxxxxxxxxxxxxxxxxx) : lignes 750 à 949
+    // début de la zone attribuée au développeur 3 (Mentec) : lignes 750 à 949
     // --------------------------------------------------------------------------------------
     
     
     
+    //Début Création autorisation
     
+    public function creationAutorisation ($idAutorisant, $idAutorise) {
+        $txt_req1 = "insert into tracegps_autorisations" ;
+        $txt_req1 .= " values (:idAutorisant, :idAutorise)";
+        $req1 = $this->cnx->prepare($txt_req1);
+        // liaison de la requête et de ses paramètres
+        $req1->bindValue("idAutorisant", utf8_decode($idAutorisant), PDO::PARAM_INT);
+        $req1->bindValue("idAutorise", utf8_decode($idAutorise), PDO::PARAM_INT);
+        // exécution de la requête
+        $ok = $req1->execute();
+        
+    }
+    
+    //Fin Création autorisation
     
     
     
@@ -997,7 +1011,7 @@ class DAO
     
    
     // --------------------------------------------------------------------------------------
-    // début de la zone attribuée au développeur 3 (xxxxxxxxxxxxxxxxxxxx) : lignes 950 à 1150
+    // début de la zone attribuée au développeur 4 (Derrien) : lignes 950 à 1150
     // --------------------------------------------------------------------------------------
     
     
