@@ -628,7 +628,7 @@ class DAO
         else {
             return true;
         }
-    }
+    }//fin existeAdrMailUtilisateur
     
     public function getLesUtilisateursAutorisant($idUtilisateur) 
     {
@@ -677,9 +677,37 @@ class DAO
         $reqIdAutorisant->closeCursor();
         // fourniture de la collection
         return $lesUtilisateursAutorisant;
-    }
+    }//fin getLesUtilisateursAutorisant
 
+    public function getLesTraces($idUtilisateur)
+    {
+        $IdTrace = "select id from tracegps_traces where idUtilisateur =:idUtilisateurRecu order by id desc";
+        $reqIdTrace = $this->cnx->prepare($IdTrace);
+        $reqIdTrace->bindValue("idUtilisateurRecu", $idUtilisateur, PDO::PARAM_INT);
+        // extraction des données
+        $reqIdTrace->execute();
+        
+        $uneLigneIdTrace = $reqIdTrace->fetch(PDO::FETCH_OBJ);
+        
+        $lesTraces = new ArrayObject();
+        
+        while($uneLigneIdTrace)
+        {            
+            $lesTraces->append($this->getUneTrace($uneLigneIdTrace->id));
+            $uneLigneIdTrace = $reqIdTrace->fetch(PDO::FETCH_OBJ);
+        }
+        return $lesTraces;
+    }        
     
+    /*public function getLesTracesAutorisees($idUtilisateur)
+    {
+        $lesUtilisateurs = $this->getLesUtilisateursAutorisant($idUtilisateur); 
+        
+        foreach ($lesUtilisateurs as $unUtilisateur)
+        {   
+            
+        }
+    }*/
     
     
     
