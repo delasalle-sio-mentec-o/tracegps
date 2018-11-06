@@ -216,7 +216,7 @@ if ($ok) {
 else {
     echo "<p>Echec lors de l'enregistrement de la trace !</p>";
 }
-$trace2 = new Trace(0, date('Y-m-d H:i:s', time()), null, false, 3);
+$trace2 = new Trace(0, date('Y-m-d H:i:s', time()), "2017-12-18 14:10:00", false, 3);
 $ok = $dao->creerUneTrace($trace2);
 if ($ok) {
     echo "<p>Trace bien enregistrée !</p>";
@@ -237,6 +237,17 @@ else {
     echo "<p>Echec lors de la suppression de la trace !</p>";
 }
 
+// test de la méthode getLesTraces($idUtilisateur) ------------------------------------------------
+// modifié par Jim le 14/8/2018
+echo "<h3>Test de getLesTraces(idUtilisateur) : </h3>";
+$lesTraces = $dao->getLesTraces(2);
+$nbReponses = sizeof($lesTraces);
+echo "<p>Nombre de traces de l'utilisateur 2 : " . $nbReponses . "</p>";
+// affichage des traces
+foreach ($lesTraces as $uneTrace)
+{   echo ($uneTrace->toString());
+echo ('<br>');
+}
 
 
 
