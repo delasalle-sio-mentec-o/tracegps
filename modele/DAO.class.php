@@ -608,7 +608,8 @@ class DAO
     
     // fournit true si le mail $adrMail existe dans la table tracegps_utilisateurs, false sinon
     // modifié par Le 10e le 16/10/2018
-    public function existeAdrMailUtilisateur($adrMail) {
+    public function existeAdrMailUtilisateur($adrMail) 
+    {
         // préparation de la requête de recherche
         $SelectAdrMailUtilisateur = "Select count(*) from tracegps_utilisateurs where adrMail = :adrMail";
         $req = $this->cnx->prepare($SelectAdrMailUtilisateur);
@@ -627,6 +628,55 @@ class DAO
         else {
             return true;
         }
+    }
+    
+    public function getLesUtilisateursAutorisant($idUtilisateur) 
+    {
+        // préparation de la requête de recherche
+        $IdAutorisant = "select idAutorisant from tracegps_autorisations where idAutorise = :idUtilisateur;";
+        $reqIdAutorisant = $this->cnx->prepare($IdAutorisant);
+        // liaison de la requête et de ses paramètres
+        $reqIdAutorisant->bindValue("idUtilisateur", $idUtilisateur, PDO::PARAM_INT);
+        // exécution de la requête
+        $reqIdAutorisant->execute();               
+        
+        $uneLigneIdAutorisant = $reqIdAutorisant->fetch(PDO::FETCH_OBJ);
+        
+        // construction d'une collection d'objets Utilisateur
+        $lesUtilisateursAutorisant = new ArrayObject();
+        
+        // tant qu'une ligne est trouvée :
+        while ($uneLigneIdAutorisant) 
+        {
+            $UtilisateursAutorisant = "select id, pseudo, mdpSha1, adrMail, numTel, niveau, dateCreation, nbTraces, dateDerniereTrace from tracegps_vue_utilisateurs where id = :idAutorisant;";
+            $reqUtilisateursAutorisant = $this->cnx->prepare($UtilisateursAutorisant);
+            $reqUtilisateursAutorisant->bindValue("idAutorisant", $uneLigneIdAutorisant->idAutorisant, PDO::PARAM_INT);
+            // extraction des données
+            $reqUtilisateursAutorisant->execute();            
+                       
+            $uneLigneUtilisateursAutorisant = $reqUtilisateursAutorisant->fetch(PDO::FETCH_OBJ);     
+
+            // création d'un objet Utilisateur
+            $unId = utf8_encode($uneLigneUtilisateursAutorisant->id);
+            $unPseudo = utf8_encode($uneLigneUtilisateursAutorisant->pseudo);
+            $unMdpSha1 = utf8_encode($uneLigneUtilisateursAutorisant->mdpSha1);
+            $uneAdrMail = utf8_encode($uneLigneUtilisateursAutorisant->adrMail);
+            $unNumTel = utf8_encode($uneLigneUtilisateursAutorisant->numTel);
+            $unNiveau = utf8_encode($uneLigneUtilisateursAutorisant->niveau);
+            $uneDateCreation = utf8_encode($uneLigneUtilisateursAutorisant->dateCreation);
+            $unNbTraces = utf8_encode($uneLigneUtilisateursAutorisant->nbTraces);
+            $uneDateDerniereTrace = utf8_encode($uneLigneUtilisateursAutorisant->dateDerniereTrace);
+                
+            $unUtilisateur = new Utilisateur($unId, $unPseudo, $unMdpSha1, $uneAdrMail, $unNumTel, $unNiveau, $uneDateCreation, $unNbTraces, $uneDateDerniereTrace);
+            // ajout de l'utilisateur à la collection
+            $lesUtilisateursAutorisant->append($unUtilisateur);
+            
+            $uneLigneIdAutorisant = $reqIdAutorisant->fetch(PDO::FETCH_OBJ);
+        }
+        // libère les ressources du jeu de données
+        $reqIdAutorisant->closeCursor();
+        // fourniture de la collection
+        return $lesUtilisateursAutorisant;
     }
 
     
