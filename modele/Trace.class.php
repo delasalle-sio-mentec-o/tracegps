@@ -124,7 +124,7 @@ class Trace
         $altMax = $unPoint->getAltitude();
         $altMin = $unPoint->getAltitude();
         
-        for ($i = 0; $i < sizeof($this->lesPointsDeTrace) - 1; $i++)
+        for ($i = 0; $i < sizeof($this->lesPointsDeTrace); $i++)
         {
             $lePoint = $this->lesPointsDeTrace[$i];
             $alt = $lePoint->getAltitude();
