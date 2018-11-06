@@ -1227,7 +1227,7 @@ class DAO
             $retour = $laTrace;
             $uneLigne = $req->fetch(PDO::FETCH_OBJ);
         }
-        
+        $req->closeCursor();
         return $retour;
         
     }
@@ -1271,7 +1271,28 @@ class DAO
         return true;
     }
     
-    
+    public function getToutesLesTraces()
+    {
+        // préparation de la requête de recherche
+        $txt_req = "Select id";
+        $txt_req .= " from tracegps_traces ORDER BY id DESC";
+        
+        $req = $this->cnx->prepare($txt_req);
+        // extraction des données
+        $req->execute();
+        $uneLigne = $req->fetch(PDO::FETCH_OBJ);
+        $lesTraces = array();
+        while($uneLigne)
+        {
+            $uneTrace = DAO::getUneTrace($uneLigne->id);
+            
+            $lesTraces[] = $uneTrace;
+            $uneLigne = $req->fetch(PDO::FETCH_OBJ);
+            
+        }
+        return $lesTraces;
+    } 
+   
     
     
     
