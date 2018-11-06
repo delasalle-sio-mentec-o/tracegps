@@ -704,15 +704,25 @@ class DAO
         return $lesTraces;
     }        
     
-    /*public function getLesTracesAutorisees($idUtilisateur)
+    public function getLesTracesAutorisees($idUtilisateur)
     {
         $lesUtilisateurs = $this->getLesUtilisateursAutorisant($idUtilisateur); 
         
+        $lesTraces = new ArrayObject();
+        $i = -1;
         foreach ($lesUtilisateurs as $unUtilisateur)
-        {   
-            
+        {              
+            $lesTraces->append($this->getUneTrace($unUtilisateur->getId()));
+            $i++;
         }
-    }*/
+        $lesTracesRetour = new ArrayObject();
+        while($i>= 0)
+        {
+            $lesTracesRetour->append($lesTraces[$i]);
+            $i--;
+        }
+        return $lesTracesRetour;
+    }
     
     
     
@@ -721,7 +731,7 @@ class DAO
     
     
     
-    
+ 
     
     
     
