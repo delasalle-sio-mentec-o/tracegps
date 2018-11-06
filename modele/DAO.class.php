@@ -957,7 +957,6 @@ class DAO
         $txt_req .= " and idAutorise = id AND idAutorisant = :idUtilisateur";
         $txt_req .= " order by pseudo";
         
-        echo $txt_req;
         
         $req = $this->cnx->prepare($txt_req);
         $req->bindValue("idUtilisateur", utf8_decode($idUtilisateur), PDO::PARAM_INT);
