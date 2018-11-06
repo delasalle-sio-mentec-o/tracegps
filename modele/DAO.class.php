@@ -354,22 +354,34 @@ class DAO
     public function creerUneTrace($uneTrace) {
         // on teste si l'utilisateur existe déjà
         
-        // préparation de la requête
-        $textReqInsertionTraceBdd = "insert into tracegps_traces (dateDebut, dateFin, terminee, idUtilisateur)";
-        $textReqInsertionTraceBdd .= " values (:dateDebut, :dateFin, :terminee, :idUtilisateur)";
-        $reqInsertionTraceBdd = $this->cnx->prepare($textReqInsertionTraceBdd);
-        // liaison de la requête et de ses paramètres
-        $reqInsertionTraceBdd->bindValue("dateDebut", utf8_decode($uneTrace->getDateHeureDebut()), PDO::PARAM_STR);
-        $reqInsertionTraceBdd->bindValue("dateFin", utf8_decode($uneTrace->getDateHeureFin()), PDO::PARAM_STR);
-        $reqInsertionTraceBdd->bindValue("terminee", utf8_decode($uneTrace->getTerminee()), PDO::PARAM_INT);
-        $reqInsertionTraceBdd->bindValue("idUtilisateur", utf8_decode($uneTrace->getIdUtilisateur()), PDO::PARAM_INT);
-        // exécution de la requête
-        $ok = $reqInsertionTraceBdd->execute();
+        // préparation de la requête  
+        if($uneTrace->getTerminee()==True){
+            $textReqInsertionTraceBdd = "insert into tracegps_traces (dateDebut, dateFin, terminee, idUtilisateur)";
+            $textReqInsertionTraceBdd .= " values (:dateDebut, :dateFin, 1 , :idUtilisateur)";
+            $reqInsertionTraceBdd = $this->cnx->prepare($textReqInsertionTraceBdd);
+            // liaison de la requête et de ses paramètres
+            $reqInsertionTraceBdd->bindValue("dateDebut", utf8_decode($uneTrace->getDateHeureDebut()), PDO::PARAM_STR);
+            $reqInsertionTraceBdd->bindValue("dateFin", utf8_decode($uneTrace->getDateHeureFin()), PDO::PARAM_STR);
+            $reqInsertionTraceBdd->bindValue("idUtilisateur", utf8_decode($uneTrace->getIdUtilisateur()), PDO::PARAM_INT);
+            // exécution de la requête
+            $ok = $reqInsertionTraceBdd->execute();
+        }
+        else{
+            $textReqInsertionTraceBdd = "insert into tracegps_traces (dateDebut, dateFin, terminee, idUtilisateur)";
+            $textReqInsertionTraceBdd .= " values (:dateDebut, NULL, 0, :idUtilisateur)";
+            $reqInsertionTraceBdd = $this->cnx->prepare($textReqInsertionTraceBdd);
+            // liaison de la requête et de ses paramètres
+            $reqInsertionTraceBdd->bindValue("dateDebut", utf8_decode($uneTrace->getDateHeureDebut()), PDO::PARAM_STR);
+            $reqInsertionTraceBdd->bindValue("idUtilisateur", utf8_decode($uneTrace->getIdUtilisateur()), PDO::PARAM_INT); 
+            // exécution de la requête
+            $ok = $reqInsertionTraceBdd->execute();
+        }
+       
         // sortir en cas d'échec
         if ( ! $ok) { return false; }
         
         // recherche de l'identifiant (auto_increment) qui a été attribué à la trace
-        $txtIdNewTrace = "Select max(id) as idMax from tracegps_utilisateurs";
+        $txtIdNewTrace = "Select max(id) as idMax from tracegps_traces";
         $IdNewTrace = $this->cnx->prepare($txtIdNewTrace);
         // extraction des données
         $IdNewTrace->execute();
@@ -596,20 +608,13 @@ class DAO
     
     
     
-    
-    
-    
-    
-    
-    
     // --------------------------------------------------------------------------------------
     // début de la zone attribuée au développeur 2 (LE 10E) : lignes 550 à 749
     // --------------------------------------------------------------------------------------
     
     // fournit true si le mail $adrMail existe dans la table tracegps_utilisateurs, false sinon
     // modifié par Le 10e le 16/10/2018
-    public function existeAdrMailUtilisateur($adrMail) 
-    {
+    public function existeAdrMailUtilisateur($adrMail) {
         // préparation de la requête de recherche
         $SelectAdrMailUtilisateur = "Select count(*) from tracegps_utilisateurs where adrMail = :adrMail";
         $req = $this->cnx->prepare($SelectAdrMailUtilisateur);
@@ -628,7 +633,7 @@ class DAO
         else {
             return true;
         }
-    }
+    }//fin existeAdrMailUtilisateur
     
     public function getLesUtilisateursAutorisant($idUtilisateur) 
     {
@@ -677,9 +682,37 @@ class DAO
         $reqIdAutorisant->closeCursor();
         // fourniture de la collection
         return $lesUtilisateursAutorisant;
-    }
+    }//fin getLesUtilisateursAutorisant
 
+    public function getLesTraces($idUtilisateur)
+    {
+        $IdTrace = "select id from tracegps_traces where idUtilisateur =:idUtilisateurRecu order by id desc";
+        $reqIdTrace = $this->cnx->prepare($IdTrace);
+        $reqIdTrace->bindValue("idUtilisateurRecu", $idUtilisateur, PDO::PARAM_INT);
+        // extraction des données
+        $reqIdTrace->execute();
+        
+        $uneLigneIdTrace = $reqIdTrace->fetch(PDO::FETCH_OBJ);
+        
+        $lesTraces = new ArrayObject();
+        
+        while($uneLigneIdTrace)
+        {            
+            $lesTraces->append($this->getUneTrace($uneLigneIdTrace->id));
+            $uneLigneIdTrace = $reqIdTrace->fetch(PDO::FETCH_OBJ);
+        }
+        return $lesTraces;
+    }        
     
+    /*public function getLesTracesAutorisees($idUtilisateur)
+    {
+        $lesUtilisateurs = $this->getLesUtilisateursAutorisant($idUtilisateur); 
+        
+        foreach ($lesUtilisateurs as $unUtilisateur)
+        {   
+            
+        }
+    }*/
     
     
     
@@ -1285,7 +1318,7 @@ class DAO
             $retour = $laTrace;
             $uneLigne = $req->fetch(PDO::FETCH_OBJ);
         }
-        $req->closeCursor();
+        
         return $retour;
         
     }
@@ -1329,28 +1362,7 @@ class DAO
         return true;
     }
     
-    public function getToutesLesTraces()
-    {
-        // préparation de la requête de recherche
-        $txt_req = "Select id";
-        $txt_req .= " from tracegps_traces ORDER BY id DESC";
-        
-        $req = $this->cnx->prepare($txt_req);
-        // extraction des données
-        $req->execute();
-        $uneLigne = $req->fetch(PDO::FETCH_OBJ);
-        $lesTraces = array();
-        while($uneLigne)
-        {
-            $uneTrace = DAO::getUneTrace($uneLigne->id);
-            
-            $lesTraces[] = $uneTrace;
-            $uneLigne = $req->fetch(PDO::FETCH_OBJ);
-            
-        }
-        return $lesTraces;
-    } 
-   
+    
     
     
     
