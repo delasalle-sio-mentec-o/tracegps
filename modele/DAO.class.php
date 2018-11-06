@@ -1068,6 +1068,40 @@ class DAO
     
     //Fin autoriseAConsulter
     
+    //Début terminerUneTrace
+    
+    
+    public function terminerUneTrace ($uneTrace) {
+        
+        $txt_req = "SELECT max(dateHeure) as dateHeure from tracegps_points where idTrace = :uneTrace";
+
+        
+        //echo $txt_req;
+        
+        $req = $this->cnx->prepare($txt_req);
+        $req->bindValue("uneTrace", $uneTrace, PDO::PARAM_INT);
+        // extraction des données
+        $req->execute();
+        $uneLigne = $req->fetch(PDO::FETCH_OBJ);
+        
+        $dateHeureFin = $uneLigne-> dateHeure;
+        
+        $text_req = "UPDATE tracegps_traces SET dateFin = :datHeureFin, terminee = 1 WHERE id = :uneTrace";
+        $req = $this->cnx->prepare($text_req);
+        $uneLigne = $req->fetch(PDO::FETCH_OBJ);
+        $req->bindValue("datHeureFin", $dateHeureFin, PDO::PARAM_STR);
+        $req->bindValue("uneTrace", $uneTrace, PDO::PARAM_INT);
+        
+        //echo "UPDATE tracegps_traces SET dateFin = '".$dateHeureFin.", terminee = 1 WHERE id = ".$uneTrace;
+        
+        $req->execute();
+
+        $req->closeCursor();
+        
+    }
+    
+    //Fin terminerUneTrace
+    
     
     
     
