@@ -884,42 +884,20 @@ class DAO
     
     public function creerUneAutorisation ($idAutorisant, $idAutorise) {
         
-        
-        $txt_req1 = "select COUNT(*) As nb from tracegps_autorisations" ;
-        $req1 = $this->cnx->prepare($txt_req1);
-        // exécution de la requête
-        $ok = $req1->execute();
-        $result1 = $req1->fetch(PDO::FETCH_OBJ);
-        $result1 = $result1->nb;
-        $req1->closeCursor();
-        
-
         $txt_req1 = "insert into tracegps_autorisations" ;
-        $txt_req1 .= " values (:idAutorise, :idAutorisant)";
+        $txt_req1 .= " values (:idAutorisant, :idAutorise)";
         $req1 = $this->cnx->prepare($txt_req1);
         // liaison de la requête et de ses paramètres
-        $req1->bindValue("idAutorisant", utf8_decode($idAutorisant), PDO::PARAM_INT);
-        $req1->bindValue("idAutorise", utf8_decode($idAutorise), PDO::PARAM_INT);
+        $req1->bindValue("idAutorisant", $idAutorisant, PDO::PARAM_INT);
+        $req1->bindValue("idAutorise", $idAutorise, PDO::PARAM_INT);
         // exécution de la requête
         $ok = $req1->execute();
+        
+
         $req1->closeCursor();
         
-        $txt_req1 = "select COUNT(*) As nb from tracegps_autorisations" ;
-        $req1 = $this->cnx->prepare($txt_req1);
-        // exécution de la requête
-        $ok = $req1->execute();
-        $result2 = $req1->fetch(PDO::FETCH_OBJ);
-        $result2 = $result2->nb;
-        $req1->closeCursor();
+        return $ok;
         
-        if ($result2 > $result1)
-        {
-            return "oui";
-        }
-            else
-            {
-                return "non";
-            }
     }
     
     //Fin Création autorisation
@@ -1025,7 +1003,37 @@ class DAO
     //Fin supprimerUneAutorisation
     
     
+    //Début autoriseAConsulter
     
+    
+    public function autoriseAConsulter ($idAutorisant, $idAutorise) {
+
+        $txt_req = "SELECT COUNT(*) As nb from tracegps_autorisations";
+        $txt_req .= " where idAutorisant = :idAutorisant";
+        $txt_req .= " and idAutorise = :idAutorise";
+        
+        //echo $txt_req;
+        
+        $req = $this->cnx->prepare($txt_req);
+        $req->bindValue("idAutorisant", $idAutorisant, PDO::PARAM_INT);
+        $req->bindValue("idAutorise", $idAutorise, PDO::PARAM_INT);
+        // extraction des données
+        $req->execute();
+        $uneLigne = $req->fetch(PDO::FETCH_OBJ);
+        
+        if ($uneLigne->nb == 1){
+            return true;
+        }
+        else{
+            return false;
+        }
+        
+        $req->closeCursor();
+        
+        
+    }
+    
+    //Fin autoriseAConsulter
     
     
     

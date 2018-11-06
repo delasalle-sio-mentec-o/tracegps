@@ -494,6 +494,14 @@ echo "<p>La suppression de l'autorisation de l'utilisateur 2 vers l'utilisateur 
 
 
 
+// test de la méthode autoriseAConsulter ----------------------------------------------------------
+// modifié par Jim le 13/8/2018
+echo "<h3>Test de autoriseAConsulter : </h3>";
+if ($dao->autoriseAConsulter(2, 3)) $autorise = "oui"; else $autorise = "non";
+echo "<p>L'utilisateur 2 autorise l'utilisateur 3 : <b>" . $autorise . "</b><br>";
+
+if ($dao->autoriseAConsulter(3, 2)) $autorise = "oui"; else $autorise = "non";
+echo "<p>L'utilisateur 3 autorise l'utilisateur 2 : <b>" . $autorise . "</b><br>";
 
 
 
