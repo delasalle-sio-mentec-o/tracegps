@@ -56,7 +56,7 @@ else
             $msg = "Aucune autorisation accordée par " . $pseudo.".";
         }
         else {
-            $msg = $nbReponses . " utilisateur(s) autorisé(s) par " . $pseudo . ".";
+            $msg = $nbReponses . " autorisation(s) accordée(s) par " . $pseudo . ".";
         }
     }
 }
