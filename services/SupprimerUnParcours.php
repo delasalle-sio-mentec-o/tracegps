@@ -38,7 +38,7 @@ if ( $pseudo == "" || $mdpSha1 == "" || $idTrace == "" )
 }
 else
 {	// il faut être utilisateur pour supprimer un parcours
-    if ( $dao->getNiveauConnexion($pseudo, $mdpSha1) != 1 )
+    if ( $dao->getNiveauConnexion($pseudo, $mdpSha1) == 0 )
     {   $msg = "Erreur : authentification incorrecte.";
     }   //
 	else 

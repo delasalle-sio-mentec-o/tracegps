@@ -1,9 +1,9 @@
 <?php
 // Projet TraceGPS - services web
-// fichier : services/GetLesUtilisateursQueJautorise.php
+// fichier : services/DemarrerEnregistrementParcours.php
 // Dernière mise à jour : 14/11/2018 par Jim
 
-// Rôle : ce service permet à un utilisateur authentifié d'obtenir la liste de tous les utilisateurs autorisés
+// Rôle : ce service permet à un utilisateur authentifié de démarrer l'enregistrement d'un parcours
 // Le service web doit recevoir 3 paramètres :
 //     pseudo : le pseudo de l'utilisateur
 //     mdpSha1 : le mot de passe de l'utilisateur hashé en sha1
@@ -11,10 +11,10 @@
 // Le service retourne un flux de données XML ou JSON contenant un compte-rendu d'exécution
 
 // Les paramètres peuvent être passés par la méthode GET (pratique pour les tests, mais à éviter en exploitation) :
-//     http://<hébergeur>/GetLesUtilisateursQueJautorise.php?pseudo=callisto&mdpSha1=13e3668bbee30b004380052b086457b014504b3e&lang=xml
+//     http://<hébergeur>/DemarrerEnregistrementParcours.php?pseudo=callisto&mdpSha1=13e3668bbee30b004380052b086457b014504b3e&lang=xml
 
 // Les paramètres peuvent être passés par la méthode POST (à privilégier en exploitation pour la confidentialité des données) :
-//     http://<hébergeur>/GetLesUtilisateursQueJautorise.php
+//     http://<hébergeur>/DemarrerEnregistrementParcours.php
 
 // connexion du serveur web à la base MySQL
 include_once ('../modele/DAO.class.php');
@@ -44,18 +44,25 @@ else
     else
     {	// récupération des informations de l'utilisateur
         $utilisateur = $dao->getUnUtilisateur($pseudo);
-        
+        $lesTraces = $dao->getLesTraces($utilisateur->getId());
+        $i = 0;
+        foreach ($lesTraces as $uneTrace)
+        {
+            if($i < $uneTrace->getId())
+            {
+                $i = $uneTrace->getId();
+            }
+        }
+        $uneTrace = new Trace($i+1, getdate(), null, 0, $utilisateur->getId());
         // récupération de la liste des utilisateurs autorisés à l'aide de la méthode getLesUtilisateursAutorises de la classe DAO
-        $lesUtilisateurs = $dao->getLesUtilisateursAutorises($utilisateur->getId());
+        $ok = $dao->creerUneTrace($uneTrace);
         
-        // mémorisation du nombre d'utilisateurs
-        $nbReponses = sizeof($lesUtilisateurs);
-        
-        if ($nbReponses == 0) {
-            $msg = "Aucune autorisation accordée par " . $pseudo.".";
+        if ( ! $ok ) {
+            $msg = "Erreur : problème lors de la création de la trace.";
         }
         else {
-            $msg = $nbReponses . " autorisation(s) accordée(s) par " . $pseudo . ".";
+            // tout a fonctionné
+            $msg = "Trace créée.";
         }
     }
 }
@@ -78,7 +85,7 @@ function creerFluxXML($msg, $lesUtilisateurs)
 {
     /* Exemple de code XML
      <?xml version="1.0" encoding="UTF-8"?>
-     <!--Service web GetLesUtilisateursQueJautorise - BTS SIO - Lycée De La Salle - Rennes-->
+     <!--Service web DemarrerEnregistrementParcours - BTS SIO - Lycée De La Salle - Rennes-->
      <data>
      <reponse>2 utilisateur(s).</reponse>
      <donnees>
@@ -115,7 +122,7 @@ function creerFluxXML($msg, $lesUtilisateurs)
     $doc->encoding = 'UTF-8';
     
     // crée un commentaire et l'encode en UTF-8
-    $elt_commentaire = $doc->createComment('Service web GetLesUtilisateursQueJautorise - BTS SIO - Lycée De La Salle - Rennes');
+    $elt_commentaire = $doc->createComment('Service web DemarrerEnregistrementParcours - BTS SIO - Lycée De La Salle - Rennes');
     // place ce commentaire à la racine du document XML
     $doc->appendChild($elt_commentaire);
     
