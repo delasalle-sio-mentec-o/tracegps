@@ -40,7 +40,7 @@ else
 {	// il faut être administrateur pour supprimer un utilisateur
     if ( $dao->getNiveauConnexion($pseudo, $mdpSha1) != 2 )
     {   $msg = "Erreur : authentification incorrecte.";
-    }
+    }   //
 	else 
 	{	// contrôle d'existence de pseudoAsupprimer
 	    $unUtilisateur = $dao->getUnUtilisateur($pseudoAsupprimer);
