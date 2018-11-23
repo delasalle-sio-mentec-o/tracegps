@@ -50,13 +50,12 @@ else
         {
             if($i < $uneTrace->getId())
             {
-                $i = $uneTrace->getId();
+               $i = $uneTrace->getId();
             }
         }
-        $uneTrace = new Trace($i+1, getdate(), null, 0, $utilisateur->getId());
+        $uneTrace = new Trace($i+1, date("Y-m-d H-i-s"), null, 0, $utilisateur->getId());
         // récupération de la liste des utilisateurs autorisés à l'aide de la méthode getLesUtilisateursAutorises de la classe DAO
         $ok = $dao->creerUneTrace($uneTrace);
-        
         if ( ! $ok ) {
             $msg = "Erreur : problème lors de la création de la trace.";
         }
