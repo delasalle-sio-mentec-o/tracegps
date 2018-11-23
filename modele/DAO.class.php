@@ -1030,7 +1030,7 @@ class DAO
         $req->execute();
         $uneLigne = $req->fetch(PDO::FETCH_OBJ);
         
-        if ($uneLigne->nb = 0){
+        if ($uneLigne->nb == 0){
             return true;
         }
         else{
