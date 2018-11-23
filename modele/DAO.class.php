@@ -1031,10 +1031,10 @@ class DAO
         $uneLigne = $req->fetch(PDO::FETCH_OBJ);
         
         if ($uneLigne->nb = 0){
-            return "oui";
+            return true;
         }
         else{
-            return "non";
+            return false;
         }
         
         $req->closeCursor();
@@ -1093,7 +1093,14 @@ class DAO
         $req->execute();
         $uneLigne = $req->fetch(PDO::FETCH_OBJ);
         
-        $dateHeureFin = $uneLigne-> dateHeure;
+        if ($uneLigne->dateHeure == NULL)
+        {
+            $dateHeureFin = date("Y-m-d H-i-s");
+        }
+        else 
+        {
+            $dateHeureFin = $uneLigne->dateHeure;
+        }
         
         $text_req = "UPDATE tracegps_traces SET dateFin = :datHeureFin, terminee = 1 WHERE id = :uneTrace";
         $req = $this->cnx->prepare($text_req);
@@ -1103,8 +1110,14 @@ class DAO
         
         //echo "UPDATE tracegps_traces SET dateFin = '".$dateHeureFin.", terminee = 1 WHERE id = ".$uneTrace;
         
-        $req->execute();
-
+        $ok = $req->execute();
+        if ($ok){
+            return true;
+        }
+        else{
+            return false;
+        }
+        
         $req->closeCursor();
         
     }
