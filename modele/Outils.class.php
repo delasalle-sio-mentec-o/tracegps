@@ -198,6 +198,7 @@ class Outils
 	// Dernière mise à jour : 13/7/2018 par JM CARTRON
 	public static function  envoyerMail ($adresseDestinataire, $sujet, $message, $adresseEmetteur)
 	{
+	    $message = str_replace("&", "$$", $message);
 	    // préparation de l'URL du service web avec ses paramètres
 	    $urlService = "http://sio.lyceedelasalle.fr/tracegps/services/ServiceEnvoyerMail.php";
 	    $urlService .= "?adresseDestinataire=" . $adresseDestinataire;
