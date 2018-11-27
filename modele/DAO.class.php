@@ -391,15 +391,18 @@ class DAO
         return true;
     }
     
-    public function supprimerUneTrace($id) {
+    public function supprimerUneTrace($id)
+    {
         $uneTrace = $this->getUneTrace($id);
-        if ($uneTrace == null) {
+        if ($uneTrace == null) 
+        {
             return false;
         }
         else {            
             // suppression des traces de l'utilisateur (et des points correspondants)
             $lesPoints = $this->getLesPointsDeTrace($id);
-            foreach ($lesPoints as $unPoint) {
+            foreach ($lesPoints as $unPoint) 
+            {
                 $txt_req2 = "delete from tracegps_points" ;
                 $txt_req2 .= " where id = :idPoint";
                 $req2 = $this->cnx->prepare($txt_req2);
