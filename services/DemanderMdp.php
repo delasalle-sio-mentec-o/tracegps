@@ -38,7 +38,7 @@ if ( $pseudo == "") {
 else{
     $utilisateur = $dao->getUnUtilisateur($pseudo);
     if (! $utilisateur){
-        $msg = "Erreur : utilisateur inexistant.";
+        $msg = "Erreur : pseudo inexistant.";
     }
     else{
         // envoie un courriel  à l'utilisateur avec son nouveau mot de passe
