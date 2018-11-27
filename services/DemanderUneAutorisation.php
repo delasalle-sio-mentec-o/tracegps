@@ -34,17 +34,7 @@ if ( empty ($_REQUEST ["nomPrenom"]) == true) $nomPrenom = "";  else $nomPrenom 
 if ( empty ($_REQUEST ["texteMessage"]) == true) $texteMessage = "";  else $texteMessage = strtolower($_REQUEST ["texteMessage"]);
 // "xml" par défaut si le paramètre lang est absent ou incorrect
 
-try{
-    $utilisateur = $dao->getUnUtilisateur($pseudo);
-    $destinataire = $dao->getUnUtilisateur($pseudoDestinataire);
-    //echo $mailUtilisateur = $destinataire->getAdrMail();
-    $ok = Outils::envoyerMail($destinataire->getAdrMail(), "TraceGPS demande d'autorisation de ".$pseudo, $texteMessage."\n\nCliquer sur se lien pour accepter la demande :\nhttp://127.0.0.1/ws-php-mentec/tracegps%20kraken/tracegps/services/ValiderDemandeAutorisation.php?a=".$destinataire->getMdpsha1()."&b=".$pseudo."&c=".$pseudoDestinataire."&d=1\n\nCliquer sur ce lien pour refuser la demande :\nhttp://127.0.0.1/ws-php-mentec/tracegps%20kraken/tracegps/services/ValiderDemandeAutorisation.php?a=".$destinataire->getMdpsha1()."&b=".$pseudo."&c=".$pseudoDestinataire."&d=0", $ADR_MAIL_EMETTEUR);
-    //echo $mail = $destinataire->getAdrMail() ." | ". " TraceGPS demande d autorisation de ".$pseudo." | ".$texteMessage." | ". $ADR_MAIL_EMETTEUR."<br>";
-}
-catch(Exception $e) {
-    $msg = "Erreur : données incomplètes.";
-    echo $e;
-}
+
 
 if ($lang != "json"){
     $lang = "xml";
@@ -56,23 +46,41 @@ if ($lang != "json"){
     $msg = "Erreur : données incomplètes.";
     }
     else {
+        $utilisateur = $dao->getUnUtilisateur($pseudo);
+        $destinataire = $dao->getUnUtilisateur($pseudoDestinataire);
+    
         if (! $utilisateur)
         {
             $msg = "Erreur : utilisateur inexistant.";
         }
         else {
             if(! $destinataire)
-        {
-            $msg = "Erreur : destinataire inexistant.";
-        }
-        else {
-
-            if($ok){
-                $msg = $pseudoDestinataire+" va recevoir un courriel avec votre demande.";
+            {
+                $msg = "Erreur : pseudo utilisateur inexistant.";
             }
             else {
-                $msg = "Erreur : l'envoi du courriel de demande d'autorisation a rencontré un problème.";
-            }
+                if ( $dao->getNiveauConnexion($pseudo, $mdpSha1) == 0 )
+                    $msg = "Erreur : authentification incorrecte.";
+                    else
+                    {
+                    try{
+                        
+                        //echo $mailUtilisateur = $destinataire->getAdrMail();
+                        $ok = Outils::envoyerMail($destinataire->getAdrMail(), "TraceGPS demande d'autorisation de ".$pseudo, $texteMessage."\n\nCliquer sur se lien pour accepter la demande :\nhttp://127.0.0.1/ws-php-mentec/tracegps%20kraken/tracegps/services/ValiderDemandeAutorisation.php?a=".$destinataire->getMdpsha1()."&b=".$pseudo."&c=".$pseudoDestinataire."&d=1\n\nCliquer sur ce lien pour refuser la demande :\nhttp://127.0.0.1/ws-php-mentec/tracegps%20kraken/tracegps/services/ValiderDemandeAutorisation.php?a=".$destinataire->getMdpsha1()."&b=".$pseudo."&c=".$pseudoDestinataire."&d=0", $ADR_MAIL_EMETTEUR);
+                        //echo $mail = $destinataire->getAdrMail() ." | ". " TraceGPS demande d autorisation de ".$pseudo." | ".$texteMessage." | ". $ADR_MAIL_EMETTEUR."<br>";
+                    }
+                    catch(Exception $e) {
+                        $msg = "Erreur : données incomplètes.";
+                        //echo $e;
+                    }
+        
+                    if($ok){
+                        $msg = $pseudoDestinataire . " va recevoir un courriel avec votre demande.";
+                    }
+                    else {
+                        $msg = "Erreur : l'envoi du courriel de demande d'autorisation a rencontré un problème.";
+                    }
+             }
         }
         }
     }
