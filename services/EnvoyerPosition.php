@@ -55,16 +55,23 @@
                 }
                 else 
                 {
-                    $idRealtif = sizeof($uneTrace->getLesPointsDeTrace())+1;
-                    $unPoint = new PointDeTrace($idTrace,$idRealtif, $latitude, $longitude, $altitude, $dateHeure, $rythmeCardio, 0, 0, 0);
-                    $ok = $dao->creerUnPointDeTrace($unPoint);
-                    if ( $ok == false ) 
+                    if($uneTrace->getTerminee()==1)
                     {
-                        $msg = "Erreur : problème lors de l'enregistrement du point.";
+                        $msg = "Erreur : trace terminée.";
                     }
-                    else 
+                    else
                     {
-                        $msg = "Point créé.";
+                        $idRealtif = sizeof($uneTrace->getLesPointsDeTrace())+1;
+                        $unPoint = new PointDeTrace($idTrace,$idRealtif, $latitude, $longitude, $altitude, $dateHeure, $rythmeCardio, 0, 0, 0);
+                        $ok = $dao->creerUnPointDeTrace($unPoint);
+                        if ( $ok == false ) 
+                        {
+                            $msg = "Erreur : problème lors de l'enregistrement du point.";
+                        }
+                        else 
+                        {
+                            $msg = "Point créé.";
+                        }
                     }
                 }
             }
