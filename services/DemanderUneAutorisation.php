@@ -45,7 +45,6 @@ catch(Exception $e) {
     $msg = "Erreur : données incomplètes.";
     echo $e;
 }
-Outils::envoyerMail($destinataire->getAdrMail(), "TraceGPS demande d autorisation de "+$pseudo, $texteMessage, $ADR_MAIL_EMETTEUR);
 
 if ($lang != "json"){
     $lang = "xml";
