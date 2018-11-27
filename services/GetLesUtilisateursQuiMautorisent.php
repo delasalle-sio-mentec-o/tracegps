@@ -52,10 +52,10 @@ else
         $nbReponses = sizeof($lesUtilisateurs);
         
         if ($nbReponses == 0) {
-            $msg = "Aucune autorisation accordée par " . $pseudo.".";
+            $msg = "Aucune autorisation accordée à " . $pseudo.".";
         }
         else {
-            $msg = $nbReponses . " autorisation(s) accordée(s) par " . $pseudo . ".";
+            $msg = $nbReponses . " autorisation(s) accordée(s) à " . $pseudo . ".";
         }
     }
 }
