@@ -36,15 +36,22 @@ if ( $pseudo == "") {
     $msg = "Erreur : données incomplètes.";
 }
 else{
-   	// envoie un courriel  à l'utilisateur avec son nouveau mot de passe
-	$nouveauMdp = substr(sha1(microtime()),rand(0,26),15);
-   	$ok = $dao->envoyerMdp ($pseudo, $nouveauMdp);
-    if ( ! $ok ) {
-        $msg = "Enregistrement effectué ; l'envoi du courriel  de confirmation a rencontré un problème.";
+    $utilisateur = $dao->getUnUtilisateur($pseudo);
+    if (! $utilisateur){
+        $msg = "Erreur : utilisateur inexistant.";
     }
-    else {
-		$msg = "Enregistrement effectué ; vous allez recevoir un courriel  de confirmation.";
-	}	
+    else{
+        // envoie un courriel  à l'utilisateur avec son nouveau mot de passe
+        $nouveauMdp = substr(sha1(microtime()),rand(0,26),15);
+        $ok = $dao->envoyerMdp ($pseudo, $nouveauMdp);
+        if ( ! $ok ) {
+            $msg = "Enregistrement effectué ; l'envoi du courriel  de confirmation a rencontré un problème.";
+        }
+        else {
+            $msg = "Enregistrement effectué ; vous allez recevoir un courriel  de confirmation.";
+        }	
+    }
+
 }
 
 // ferme la connexion à MySQL :
