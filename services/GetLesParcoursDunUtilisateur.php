@@ -22,17 +22,31 @@ else
     $msg = "Erreur : authentification incorrecte.";
     else
     {
-        $utilisateur = $dao->getUnUtilisateur($pseudoConsulte);
+        $utilisateurConsulte = $dao->getUnUtilisateur($pseudoConsulte);
         
-        $lesParcoursDunUtilisateur = $dao->getLesTraces($utilisateur->getId());
-
-        $nbReponses = sizeof($lesParcoursDunUtilisateur);
-        
-        if ($nbReponses == 0) {
-            $msg = "Erreur : psoeudo consulté inexistant inexistant.";
+        if ( ! $utilisateurConsulte)
+        {
+            $msg = "Erreur : pseudo consulté inexistant";
         }
-        else {
-            $msg = $nbReponses . " autorisation(s) accordée(s) par " . $pseudoConsulte . ".";
+        else 
+        {
+            $utilisateur = $dao->getUnUtilisateur($pseudo);
+            $autoriseAconsulter = $dao->autoriseAConsulter($utilisateurConsulte->getId(), $utilisateur->getId());
+            
+           
+            if ($autoriseAconsulter == false && $pseudo != $pseudoConsulte)
+            {
+                $msg = "Erreur : vous n'êtes pas autorisé par cet utilisateur.";
+             }
+             else 
+             {
+                 $lesParcoursDunUtilisateur = $dao->getLesTraces($utilisateurConsulte->getId());
+                 
+                 $nbReponses = sizeof($lesParcoursDunUtilisateur);
+                 
+                 $msg = $nbReponses . " trace(s) pour l'utilisateur " . $pseudoConsulte . ".";
+             }
+
         }
     }
 }
@@ -79,13 +93,13 @@ function creerFluxXML($msg, $lesParcoursDunUtilisateur)
         $elt_data->appendChild($elt_donnees);
         
         // place l'élément 'lesUtilisateurs' dans l'élément 'donnees'
-        $elt_lesParcoursDunUtilisateur = $doc->createElement('lesUtilisateurs');
+        $elt_lesParcoursDunUtilisateur = $doc->createElement('lesTraces');
         $elt_donnees->appendChild($elt_lesParcoursDunUtilisateur);
         
         foreach ($lesParcoursDunUtilisateur as $unParcourDunUtilisateur)
         {
             // crée un élément vide 'utilisateur'
-            $elt_ParcourDunUtilisateur = $doc->createElement('utilisateur');
+            $elt_ParcourDunUtilisateur = $doc->createElement('trace');
             // place l'élément 'utilisateur' dans l'élément 'lesUtilisateurs'
             $elt_lesParcoursDunUtilisateur->appendChild($elt_ParcourDunUtilisateur);
             
@@ -98,10 +112,11 @@ function creerFluxXML($msg, $lesParcoursDunUtilisateur)
             
             $elt_adrMail    = $doc->createElement('terminee', $unParcourDunUtilisateur->getTerminee());
             $elt_ParcourDunUtilisateur->appendChild($elt_adrMail);
-            
-            $elt_numTel     = $doc->createElement('dateHeureFin', $unParcourDunUtilisateur->getDateHeureFin());
-            $elt_ParcourDunUtilisateur->appendChild($elt_numTel);
-            
+            if ($unParcourDunUtilisateur->getDateHeureFin() != null)
+            {
+                $elt_numTel     = $doc->createElement('dateHeureFin', $unParcourDunUtilisateur->getDateHeureFin());
+                $elt_ParcourDunUtilisateur->appendChild($elt_numTel);
+            }
             $elt_niveau     = $doc->createElement('distance', $unParcourDunUtilisateur->getDistanceTotale());
             $elt_ParcourDunUtilisateur->appendChild($elt_niveau);
             
@@ -131,13 +146,15 @@ function creerFluxJSON($msg, $lesParcoursDunUtilisateur)
             $unObjetParcourDunUtilisateur["id"] = $unParcourDunUtilisateur->getId();
             $unObjetParcourDunUtilisateur["dateHeureDebut"] = $unParcourDunUtilisateur->getDateHeureDebut();
             $unObjetParcourDunUtilisateur["terminee"] = $unParcourDunUtilisateur->getTerminee();
-            $unObjetParcourDunUtilisateur["dateHeureFin"] = $unParcourDunUtilisateur->getDateHeureFin();
-            $unObjetParcourDunUtilisateur["distance"] = $unParcourDunUtilisateur->getDistance();
+            if ($unParcourDunUtilisateur->getDateHeureFin() != null)
+                $unObjetParcourDunUtilisateur["dateHeureFin"] = $unParcourDunUtilisateur->getDateHeureFin();
+            
+            $unObjetParcourDunUtilisateur["distance"] = $unParcourDunUtilisateur->getDistanceTotale();
             $unObjetParcourDunUtilisateur["idUtilisateur"] = $unParcourDunUtilisateur->getIdUtilisateur();
-            $unObjetParcourDunUtilisateur[] = $unObjetParcourDunUtilisateur;
+            $lesObjetsDuTableau[] = $unObjetParcourDunUtilisateur;
         }
-        // construction de l'élément "lesUtilisateurs"
-        $elt_ParcoursDunUtilisateur = ["lesParcoursDunUtilisateur" => $lesObjetsDuTableau];
+        // construction de l'élément "lesTraces"
+        $elt_ParcoursDunUtilisateur = ["lesTraces" => $lesObjetsDuTableau];
         
         // construction de l'élément "data"
         $elt_data = ["reponse" => $msg, "donnees" => $elt_ParcoursDunUtilisateur];
