@@ -29,7 +29,7 @@ else
         $nbReponses = sizeof($lesParcoursDunUtilisateur);
         
         if ($nbReponses == 0) {
-            $msg = "Aucune autorisation accordée par " . $pseudoConsulte.".";
+            $msg = "Erreur : psoeudo consulté inexistant inexistant.";
         }
         else {
             $msg = $nbReponses . " autorisation(s) accordée(s) par " . $pseudoConsulte . ".";
