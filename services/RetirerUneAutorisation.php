@@ -35,7 +35,7 @@ if ($lang != "json") $lang = "xml";
 
 
 // Contrôle de la présence des paramètres
-if ( $pseudo == "" || $mdpSha1 == "" || $pseudoARetirer == "" || $texteMessage == "")
+if ( $pseudo == "" || $mdpSha1 == "" || $pseudoARetirer == "")
 {	$msg = "Erreur : données incomplètes.";
 }
 else
@@ -46,30 +46,58 @@ else
 	    $destinataire = $dao->getUnUtilisateur($pseudoARetirer);
 	    $utilisateur = $dao->getUnUtilisateur($pseudo);
 	    
-	    $destinataireid = $destinataire->getId();
-	    $utilisateurid = $utilisateur->getId();
-	    
-	    $ok = Outils::envoyerMail($destinataire->getAdrMail(), "TraceGPS annulation de l'autorisation de ".$pseudo, "Cher ou chère ".$pseudoARetirer."\nL'utilisateur ".$pseudo." du système TraceGPS vous retire l'autorisation de suivre ses parcours.\nSon message :\n".$texteMessage."\n\nCordialement\n L'administrateur du système TraceGPS", $ADR_MAIL_EMETTEUR);
-	    $suprimer = $dao->supprimerUneAutorisation ($utilisateurid, $destinataireid);
-	    if ($ok) {
-	        $msg = "Mail envoyé.\n";
-	        if ($suprimer){
-	            $msg .= "Autorisation supprimée\n ".$pseudo." va recevoir un courriel de notification.";
-	        }
-	        else{
-	            $msg .= "Erreur lors de la suppression";
-	        }
+	    if(! $destinataire)
+	    {
+	        $msg = "Erreur : pseudo utilisateur inexistant.";
 	    }
-	    else{
-			$msg = "Erreur mail non envoyé.\n";
-			if ($suprimer){
-			    $msg .= "Autorisation supprimée\n ".$pseudo." va recevoir un courriel de notification.";
-			}
-			else{
-			    $msg .= "Erreur lors de la suppression";
-			}
+	    else {
+    	    $destinataireid = $destinataire->getId();
+    	    $utilisateurid = $utilisateur->getId();
+    	    
+    	    $oui = $dao->autoriseAConsulter($utilisateurid, $destinataireid);
+    	    
+    	    if (! $oui)
+    	    {
+    	        $msg = "Erreur : l'autorisation n'était pas accordée.";
+    	    }
+    	    else {
+    	        $supprimer = $dao->supprimerUneAutorisation ($utilisateurid, $destinataireid);
+    	        if ($texteMessage == "")
+    	        {
+    	            if ($supprimer){
+    	                $msg = "Autorisation supprimée.";
+    	            }
+    	            else{
+    	                $msg = "Erreur : autorisation supprimée.";
+    	            }
+    	        }
+    	        else 
+    	        {
+    	            
+        	        $ok = Outils::envoyerMail($destinataire->getAdrMail(), "TraceGPS annulation de l'autorisation de ".$pseudo, "Cher ou chère ".$pseudoARetirer."\nL'utilisateur ".$pseudo." du système TraceGPS vous retire l'autorisation de suivre ses parcours.\nSon message :\n".$texteMessage."\n\nCordialement\n L'administrateur du système TraceGPS", $ADR_MAIL_EMETTEUR);
+            	    if ($ok) {
+            	        if ($supprimer){
+            	            $msg = "Autorisation supprimée ; ";
+            	        }
+            	        else{
+            	            $msg = "Erreur : autorisation supprimée ; ";
+            	        }
+            	        $msg .= $pseudoARetirer." va recevoir un courriel de notification.";
+            	        
+            	    }
+            	    else{
+            			
+            			if ($supprimer){
+            			    $msg = "Autorisation supprimée ; ";
+            			}
+            			else{
+            			    $msg = "Erreur : autorisation supprimée ; ";
+            			}
+            			$msg .= $pseudoARetirer." l'envoi du courriel de notification a rencontré un problème.";
+            	   }
+    	        }
+	       }
 	    }
-	    
 	}
 }
 // ferme la connexion à MySQL :
