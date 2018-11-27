@@ -224,12 +224,18 @@ class Trace
             
             $temps = strtotime($unPoint->getDateHeure()) - strtotime($leDernierPoint->getDateHeure());
             $tempsCumule = $leDernierPoint->getTempsCumule() + $temps;
-            
-            $vitesse = $distance/(double)($temps/3600);
-            
-            $unPoint->setDistanceCumulee($distanceCumulee);
-            $unPoint->setTempsCumule($tempsCumule);
-            $unPoint->setVitesse($vitesse);
+            if($temps == 0)
+            {
+                $vitesse = 0;
+            }
+            else
+            {
+                $vitesse = $distance/(double)($temps/3600);
+                
+                $unPoint->setDistanceCumulee($distanceCumulee);
+                $unPoint->setTempsCumule($tempsCumule);
+                $unPoint->setVitesse($vitesse);
+            }
         }
         $this->lesPointsDeTrace[] = $unPoint;
     }
