@@ -63,7 +63,6 @@ else
 	            {
     	            // modification des champs terminee et dateFin de la trace
     	            $ok = $dao->terminerUneTrace($idTrace);
-    	            echo $ok;
     	            if ( ! $ok ) {
     	                $msg = "Erreur : problème lors de la fin de l'enregistrement de la trace.";
                     }
