@@ -32,7 +32,7 @@ if ($lang != "json") $lang = "xml";
 
 // initialisation du nombre de réponses
 $nbReponses = 0;
-$lesUtilisateurs = array();
+$uneTrace = array();
 
 // Contrôle de la présence des paramètres
 if ( $pseudo == "" || $mdpSha1 == "" )
@@ -54,7 +54,6 @@ else
             }
         }
         $uneTrace = new Trace($i+1, date("Y-m-d H-i-s"), null, 0, $utilisateur->getId());
-        // récupération de la liste des utilisateurs autorisés à l'aide de la méthode getLesUtilisateursAutorises de la classe DAO
         $ok = $dao->creerUneTrace($uneTrace);
         if ( ! $ok ) {
             $msg = "Erreur : problème lors de la création de la trace.";
@@ -70,17 +69,17 @@ unset($dao);
 
 // création du flux en sortie
 if ($lang == "xml") {
-    creerFluxXML($msg, $lesUtilisateurs);
+    creerFluxXML($msg, $uneTrace);
 }
 else {
-    creerFluxJSON($msg, $lesUtilisateurs);
+    creerFluxJSON($msg, $uneTrace);
 }
 
 // fin du programme (pour ne pas enchainer sur la fonction qui suit)
 exit;
 
 // création du flux XML en sortie
-function creerFluxXML($msg, $lesUtilisateurs)
+function creerFluxXML($msg, $uneTrace)
 {
     /* Exemple de code XML
      <?xml version="1.0" encoding="UTF-8"?>
@@ -134,49 +133,34 @@ function creerFluxXML($msg, $lesUtilisateurs)
     $elt_data->appendChild($elt_reponse);
     
     // traitement des utilisateurs
-    if (sizeof($lesUtilisateurs) > 0) {
+    if (sizeof($uneTrace) > 0) {
         // place l'élément 'donnees' dans l'élément 'data'
         $elt_donnees = $doc->createElement('donnees');
         $elt_data->appendChild($elt_donnees);
         
         // place l'élément 'lesUtilisateurs' dans l'élément 'donnees'
-        $elt_lesUtilisateurs = $doc->createElement('lesUtilisateurs');
-        $elt_donnees->appendChild($elt_lesUtilisateurs);
+        //$elt_uneTrace = $doc->createElement('laTrace');
+        //$elt_donnees->appendChild($elt_uneTrace);
+
+            // crée un élément vide 'trace'
+            $elt_trace = $doc->createElement('trace');
+            // place l'élément 'trace' dans l'élément 'uneTrace'
+            //$elt_uneTrace->appendChild($elt_trace);
+            $elt_donnees->appendChild($elt_trace);
+            
+            // crée les éléments enfants de l'élément 'trace'
+            $elt_id         = $doc->createElement('id', $uneTrace->getId());
+            $elt_trace->appendChild($elt_id);
+            
+            $elt_dateHeureDebut     = $doc->createElement('dateHeureDebut', $uneTrace->getDateHeureDebut());
+            $elt_trace->appendChild($elt_dateHeureDebut);
+            
+            $elt_terminee    = $doc->createElement('terminee',$uneTrace->getTerminee());
+            $elt_trace->appendChild($elt_terminee);
+            
+            $elt_idUtilisateur    = $doc->createElement('idUtilisateur', $uneTrace->getIdUtilisateur());
+            $elt_trace->appendChild($elt_idUtilisateur);
         
-        foreach ($lesUtilisateurs as $unUtilisateur)
-        {
-            // crée un élément vide 'utilisateur'
-            $elt_utilisateur = $doc->createElement('utilisateur');
-            // place l'élément 'utilisateur' dans l'élément 'lesUtilisateurs'
-            $elt_lesUtilisateurs->appendChild($elt_utilisateur);
-            
-            // crée les éléments enfants de l'élément 'utilisateur'
-            $elt_id         = $doc->createElement('id', $unUtilisateur->getId());
-            $elt_utilisateur->appendChild($elt_id);
-            
-            $elt_pseudo     = $doc->createElement('pseudo', $unUtilisateur->getPseudo());
-            $elt_utilisateur->appendChild($elt_pseudo);
-            
-            $elt_adrMail    = $doc->createElement('adrMail', $unUtilisateur->getAdrMail());
-            $elt_utilisateur->appendChild($elt_adrMail);
-            
-            $elt_numTel     = $doc->createElement('numTel', $unUtilisateur->getNumTel());
-            $elt_utilisateur->appendChild($elt_numTel);
-            
-            $elt_niveau     = $doc->createElement('niveau', $unUtilisateur->getNiveau());
-            $elt_utilisateur->appendChild($elt_niveau);
-            
-            $elt_dateCreation = $doc->createElement('dateCreation', $unUtilisateur->getDateCreation());
-            $elt_utilisateur->appendChild($elt_dateCreation);
-            
-            $elt_nbTraces   = $doc->createElement('nbTraces', $unUtilisateur->getNbTraces());
-            $elt_utilisateur->appendChild($elt_nbTraces);
-            
-            if ($unUtilisateur->getNbTraces() > 0)
-            {   $elt_dateDerniereTrace = $doc->createElement('dateDerniereTrace', $unUtilisateur->getDateDerniereTrace());
-            $elt_utilisateur->appendChild($elt_dateDerniereTrace);
-            }
-        }
     }
     
     // Mise en forme finale
@@ -188,12 +172,12 @@ function creerFluxXML($msg, $lesUtilisateurs)
 }
 
 // création du flux JSON en sortie
-function creerFluxJSON($msg, $lesUtilisateurs)
+function creerFluxJSON($msg, $uneTrace)
 {
     /* Exemple de code JSON
      {
      "data": {
-     "reponse": "2 utilisateur(s).",
+     "reponse": "2 trace(s).",
      "donnees": {
      "lesUtilisateurs": [
      {
@@ -222,33 +206,27 @@ function creerFluxJSON($msg, $lesUtilisateurs)
      */
     
     
-    if (sizeof($lesUtilisateurs) == 0) {
+    if (sizeof($uneTrace) == 0) {
         // construction de l'élément "data"
         $elt_data = ["reponse" => $msg];
     }
     else {
         // construction d'un tableau contenant les utilisateurs
         $lesObjetsDuTableau = array();
-        foreach ($lesUtilisateurs as $unUtilisateur)
-        {	// crée une ligne dans le tableau
-            $unObjetUtilisateur = array();
-            $unObjetUtilisateur["id"] = $unUtilisateur->getId();
-            $unObjetUtilisateur["pseudo"] = $unUtilisateur->getPseudo();
-            $unObjetUtilisateur["adrMail"] = $unUtilisateur->getAdrMail();
-            $unObjetUtilisateur["numTel"] = $unUtilisateur->getNumTel();
-            $unObjetUtilisateur["niveau"] = $unUtilisateur->getNiveau();
-            $unObjetUtilisateur["dateCreation"] = $unUtilisateur->getDateCreation();
-            $unObjetUtilisateur["nbTraces"] = $unUtilisateur->getNbTraces();
-            if ($unUtilisateur->getNbTraces() > 0)
-            {   $unObjetUtilisateur["dateDerniereTrace"] = $unUtilisateur->getDateDerniereTrace();
-            }
-            $lesObjetsDuTableau[] = $unObjetUtilisateur;
-        }
+
+        $unObjetTrace = array();
+        $unObjetTrace["id"] = $uneTrace->getId();
+        $unObjetTrace["dateHeureDebut"] = $uneTrace->getDateHeureDebut();
+        $unObjetTrace["terminee"] = $uneTrace->getTerminee();
+        $unObjetTrace["idUtilisateur"] = $uneTrace->getIdUtilisateur();
+
+        $lesObjetsDuTableau[] = $unObjetTrace;
+        
         // construction de l'élément "lesUtilisateurs"
-        $elt_utilisateur = ["lesUtilisateurs" => $lesObjetsDuTableau];
+        $elt_trace = ["trace" => $lesObjetsDuTableau];
         
         // construction de l'élément "data"
-        $elt_data = ["reponse" => $msg, "donnees" => $elt_utilisateur];
+        $elt_data = ["reponse" => $msg, "donnees" => $elt_trace];
     }
     
     // construction de la racine
