@@ -25,6 +25,8 @@
     if ( empty ($_REQUEST ["rythmeCardio"]) == true)  $rythmeCardio = "";  else   $rythmeCardio = $_REQUEST ["rythmeCardio"];
     if ( empty ($_REQUEST ["lang"]) == true) $lang = "";  else $lang = strtolower($_REQUEST ["lang"]);
     
+    $idRelatif = 0;
+    
     // "xml" par défaut si le paramètre lang est absent ou incorrect
     if ($lang != "json") $lang = "xml";
     // Contrôle de la présence des paramètres
@@ -61,8 +63,8 @@
                     }
                     else
                     {
-                        $idRealtif = sizeof($uneTrace->getLesPointsDeTrace())+1;
-                        $unPoint = new PointDeTrace($idTrace,$idRealtif, $latitude, $longitude, $altitude, $dateHeure, $rythmeCardio, 0, 0, 0);
+                        $idRelatif = sizeof($uneTrace->getLesPointsDeTrace())+1;
+                        $unPoint = new PointDeTrace($idTrace,$idRelatif, $latitude, $longitude, $altitude, $dateHeure, $rythmeCardio, 0, 0, 0);
                         $ok = $dao->creerUnPointDeTrace($unPoint);
                         if ( $ok == false ) 
                         {
@@ -82,10 +84,10 @@
     
     // création du flux en sortie
     if ($lang == "xml") {
-        creerFluxXML($msg);
+        creerFluxXML($msg,$idRelatif);
     }
     else {
-        creerFluxJSON($msg);
+        creerFluxJSON($msg,$idRelatif);
     }
     
     // fin du programme (pour ne pas enchainer sur la fonction qui suit)
@@ -94,7 +96,7 @@
     
     
     // création du flux XML en sortie
-    function creerFluxXML($msg)
+    function creerFluxXML($msg,$idRelatif)
     {	// crée une instance de DOMdocument (DOM : Document Object Model)
         $doc = new DOMDocument();
         
@@ -115,6 +117,19 @@
         $elt_reponse = $doc->createElement('reponse', $msg);
         $elt_data->appendChild($elt_reponse);
         
+        // place l'élément 'donnees' dans l'élément 'data'
+        $elt_donnees = $doc->createElement('donnees');
+        $elt_data->appendChild($elt_donnees);
+        
+        if($idRelatif != 0)
+        {
+            // crée un élément vide 'id'
+            $elt_id = $doc->createElement('id',$idRelatif);
+            // place l'élément 'id' dans l'élément 'donnees'
+            $elt_donnees->appendChild($elt_id);
+        }
+        
+        
         // Mise en forme finale
         $doc->formatOutput = true;
         
@@ -124,7 +139,7 @@
     }
     
     // création du flux JSON en sortie
-    function creerFluxJSON($msg)
+    function creerFluxJSON($msg,$idRelatif)
     {
         /* Exemple de code JSON
          {
@@ -133,10 +148,16 @@
          }
          }
          */
-        
-        // construction de l'élément "data"
-        $elt_data = ["reponse" => $msg];
-        
+        if($idRelatif != 0)
+        { 
+            // construction de l'élément "data"
+            $elt_data = ["reponse" => $msg, "donnees" => $idRelatif];
+        }
+        else
+        {
+            // construction de l'élément "data"
+            $elt_data = ["reponse" => $msg];
+        }
         // construction de la racine
         $elt_racine = ["data" => $elt_data];
         
@@ -145,5 +166,3 @@
         return;
     }
 ?>
-
-
