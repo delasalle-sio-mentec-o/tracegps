@@ -68,7 +68,7 @@ else
                     }
                     else {
                         //tout s'est bien passé
-                        $msg = "Enregistrement terminé";
+                        $msg = "Enregistrement terminé.";
                     }
 	            }
             }

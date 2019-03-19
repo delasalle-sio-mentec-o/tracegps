@@ -60,10 +60,10 @@ else {
     		        // envoie un courriel  à l'utilisateur avec son nouveau mot de passe 
     		        $ok = $dao->envoyerMdp ($pseudo, $nouveauMdp);
     		        if ( ! $ok ) {
-        			    $msg = "Enregistrement effectué ; l'envoi du courriel  de confirmation a rencontré un problème.";
+        			    $msg = "Enregistrement effectué ; l'envoi du courriel de confirmation a rencontré un problème.";
     		        }
     		        else {
-        			    $msg = "Enregistrement effectué ; vous allez recevoir un courriel  de confirmation.";
+        			    $msg = "Enregistrement effectué ; vous allez recevoir un courriel de confirmation.";
     		        }
     		    }
     		}

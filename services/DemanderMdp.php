@@ -48,7 +48,7 @@ else{
             $msg = "Enregistrement effectué ; l'envoi du courriel  de confirmation a rencontré un problème.";
         }
         else {
-            $msg = "Enregistrement effectué ; vous allez recevoir un courriel  de confirmation.";
+            $msg = "Vous allez recevoir un courriel  de confirmation.";
         }	
     }
 
